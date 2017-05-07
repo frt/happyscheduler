@@ -9,4 +9,4 @@
 /comments CommentR POST
 
 /profile ProfileR GET
-/task TaskR PUT
+/task TaskR POST

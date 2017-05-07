@@ -2,5 +2,8 @@ module Handler.Task where
 
 import Import
 
-putTaskR :: Handler Html
-putTaskR = error "Not yet implemented: putTaskR"
+postTaskR :: Handler ()
+postTaskR = do
+    task <- requireJsonBody :: Handler Task
+    _ <- runDB $ insert task
+    sendResponseStatus status201 ("CREATED" :: Text)
