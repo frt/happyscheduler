@@ -11,5 +11,5 @@ postTasksR = do
 -- fake handler only to see the automatic json representation
 getTasksR :: Handler Value
 getTasksR = do
-    let tasks = [Task "mytask" 3 (fromGregorian 2017 05 07) True]
+    let tasks = [Task "mytask" 3 (fromGregorian 2017 05 07) True False]
     return $ object ["tasks" .= tasks]
