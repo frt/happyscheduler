@@ -9,4 +9,6 @@
 /comments CommentR POST
 
 /profile ProfileR GET
-/task TaskR POST GET
+
+/tasks TasksR POST GET
+/tasks/#TaskId TaskR GET PUT DELETE

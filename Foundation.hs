@@ -140,7 +140,7 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized (StaticR _) _ = return Authorized
-    isAuthorized TaskR _ = return Authorized
+    isAuthorized TasksR _ = return Authorized
 
     isAuthorized ProfileR _ = isAuthenticated
 

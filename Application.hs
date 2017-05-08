@@ -36,6 +36,7 @@ import Handler.Common
 import Handler.Home
 import Handler.Comment
 import Handler.Profile
+import Handler.Tasks
 import Handler.Task
 
 -- This line actually creates our YesodDispatch instance. It is the second half
