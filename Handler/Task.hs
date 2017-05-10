@@ -5,7 +5,7 @@ import Import
 getTaskR :: TaskId -> Handler Value
 getTaskR taskId = do
     task <- runDB $ get404 taskId
-    return $ object ["post" .= Entity taskId task]
+    return $ object ["task" .= Entity taskId task]
 
 putTaskR :: TaskId -> Handler Value
 putTaskR taskId = do
