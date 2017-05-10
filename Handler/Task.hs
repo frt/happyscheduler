@@ -14,4 +14,6 @@ putTaskR taskId = do
     sendResponseStatus status200 ("UPDATED" :: Text)
 
 deleteTaskR :: TaskId -> Handler Value
-deleteTaskR taskId = error "Not yet implemented: deleteTaskR"
+deleteTaskR taskId = do
+    runDB $ delete taskId
+    sendResponseStatus status200 ("DELETED" :: Text)
