@@ -7,8 +7,11 @@ getTaskR taskId = do
     task <- runDB $ get404 taskId
     return $ object ["post" .= Entity taskId task]
 
-putTaskR :: TaskId -> Handler Html
-putTaskR taskId = error "Not yet implemented: putTaskR"
+putTaskR :: TaskId -> Handler Value
+putTaskR taskId = do
+    task <- requireJsonBody :: Handler Task
+    runDB $ replace taskId task
+    sendResponseStatus status200 ("UPDATED" :: Text)
 
-deleteTaskR :: TaskId -> Handler Html
+deleteTaskR :: TaskId -> Handler Value
 deleteTaskR taskId = error "Not yet implemented: deleteTaskR"
