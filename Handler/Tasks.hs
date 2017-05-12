@@ -10,5 +10,6 @@ postTasksR = do
 
 getTasksR :: Handler Value
 getTasksR = do
+    uid <- requireAuthId
     tasks <- runDB $ selectList [] [] :: Handler [Entity Task]
     return $ object ["tasks" .= tasks]
