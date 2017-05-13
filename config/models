@@ -19,5 +19,6 @@ Task json
     dueDate Day
     happy Bool
     done Bool
+    userId UserId
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
