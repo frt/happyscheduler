@@ -5,4 +5,5 @@ import { Component } from '@angular/core';
     templateUrl: './task_list.component.html'
 })
 export class TaskListComponent {
+    tasks = ['happy Task', 'sad Task'];
 }
