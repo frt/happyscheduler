@@ -1,7 +1,12 @@
 name:              happyscheduler
 version:           0.0.0
+maintainer:        Fábio Roberto Teodoro <fr.teodoro@gmail.com>
 cabal-version:     >= 1.8
 build-type:        Simple
+
+source-repository head
+    type:          git
+    location:      https://github.com/frt/happyscheduler
 
 Flag dev
     Description:   Turn on development settings, like auto-reload templates.
@@ -24,7 +29,6 @@ library
                      Handler.Home
                      Handler.Comment
                      Handler.Profile
-                     Handler.Tasks
                      Handler.Task
 
     if flag(dev) || flag(library-only)

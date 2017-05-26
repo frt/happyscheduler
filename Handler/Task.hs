@@ -2,6 +2,18 @@ module Handler.Task where
 
 import Import
 
+getTasksR :: Handler Value
+getTasksR = do
+    uid <- requireAuthId
+    tasks <- runDB $ selectList [TaskUserId ==. uid] [] :: Handler [Entity Task]
+    return $ object ["tasks" .= tasks]
+
+postTasksR :: Handler ()
+postTasksR = do
+    task <- requireJsonBody :: Handler Task
+    _ <- runDB $ insert task
+    sendResponseStatus status201 ("CREATED" :: Text)
+
 getTaskR :: TaskId -> Handler Value
 getTaskR taskId = do
     task <- runDB $ get404 taskId
