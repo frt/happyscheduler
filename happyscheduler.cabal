@@ -1,8 +1,13 @@
-name:              happyscheduler
-version:           0.0.0
-maintainer:        Fábio Roberto Teodoro <fr.teodoro@gmail.com>
-cabal-version:     >= 1.8
-build-type:        Simple
+name:           happyscheduler
+category:       Web
+synopsis:       Procrastinate sadness, maximize happyness.
+description:    Procrastinate sadness, maximize happyness.
+version:        0.0.0
+maintainer:     Fábio Roberto Teodoro <fr.teodoro@gmail.com>
+license:        MIT
+license-file:   LICENSE
+cabal-version:  >= 1.8
+build-type:     Simple
 
 source-repository head
     type:          git
