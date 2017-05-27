@@ -1,0 +1,29 @@
+ul {
+    display: block;
+    list-style-position: outside;
+    width: -moz-fit-content;
+}
+
+li {
+    border-bottom: 1px solid darkgray;
+    line-height: normal;
+    margin: 0 5px 0 5px;
+    padding: 5px 0 5px 0;
+}
+ 
+li:last-child {
+    border: none;
+}
+
+.task-face {
+    float: right;
+    padding: 0 5px 0 5px;
+}
+
+.task-happy {
+    background-color: yellow;
+}
+
+.task-sad {
+    background-color: lightgrey;
+}
