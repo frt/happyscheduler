@@ -1,4 +1,12 @@
-<h1>Here are the things you have to do</h1>
+<h1>TODO:</h1>
 <ul>
-    <li *ngFor="let task of tasks">{{ task }}</li>
+    <li *ngFor="let task of tasks">
+        {{ task.name }}
+        &nbsp;
+        <span 
+            class="task-face" 
+            [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}"
+            >{{ task.happy ? ':)' : ':(' }}
+        </span>
+    </li>
 </ul>
