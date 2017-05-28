@@ -1,6 +1,7 @@
 module Handler.Task where
 
 import Import
+import qualified Data.Text as T (pack) 
 
 getTasksR :: Handler Value
 getTasksR = do
@@ -10,9 +11,10 @@ getTasksR = do
 
 postTasksR :: Handler ()
 postTasksR = do
+    uid <- requireAuthId
     task <- requireJsonBody :: Handler Task
-    _ <- runDB $ insert task
-    sendResponseStatus status201 ("CREATED" :: Text)
+    tid <- runDB $ insert task {taskUserId = uid}
+    sendResponseStatus status201 (T.pack ("CREATED:task:" ++ show tid))
 
 getTaskR :: TaskId -> Handler Value
 getTaskR taskId = do
