@@ -1,6 +1,6 @@
 <app-root>Loading...
-<script type="text/javascript" src="static/frontend/dist/inline.bundle.js">
-<script type="text/javascript" src="static/frontend/dist/polyfills.bundle.js">
-<script type="text/javascript" src="static/frontend/dist/styles.bundle.js">
-<script type="text/javascript" src="static/frontend/dist/vendor.bundle.js">
-<script type="text/javascript" src="static/frontend/dist/main.bundle.js">
+<script type="text/javascript" src="http://localhost:4200/inline.bundle.js">
+<script type="text/javascript" src="http://localhost:4200/polyfills.bundle.js">
+<script type="text/javascript" src="http://localhost:4200/styles.bundle.js">
+<script type="text/javascript" src="http://localhost:4200/vendor.bundle.js">
+<script type="text/javascript" src="http://localhost:4200/main.bundle.js">
