@@ -140,6 +140,7 @@ test-suite test
                        Handler.CommonSpec
                        Handler.HomeSpec
                        Handler.ProfileSpec
+                       Handler.TaskSpec
                        TestImport
     hs-source-dirs:    test
     ghc-options:       -Wall

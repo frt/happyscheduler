@@ -9,10 +9,10 @@ spec = withApp $ do
         error "Spec not implemented: getTaskR"
 
 
-    describe "çput[dTaskR" $ do
-        error "Spec not implemented: çput[dTaskR"
+    describe "putTaskR" $ do
+        error "Spec not implemented: putTaskR"
 
 
-    describe "delleteTaskR" $ do
-        error "Spec not implemented: delleteTaskR"
+    describe "deleteTaskR" $ do
+        error "Spec not implemented: deleteTaskR"
 
