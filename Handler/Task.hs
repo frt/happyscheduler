@@ -6,15 +6,18 @@ import qualified Data.Text as T (pack)
 getTasksR :: Handler Value
 getTasksR = do
     uid <- requireAuthId
-    tasks <- runDB $ selectList [TaskUserId ==. uid] [] :: Handler [Entity Task]
+    userTasks <- runDB $ selectList [UserTaskUserId ==. uid] [] :: Handler [Entity UserTask]
+--    tasks <- runDB $ selectList [Task <-. (map userTaskTaskId userTasks)] [] :: Handler [Entity Task]
+    tasks <- runDB $ selectList [] [] :: Handler [Entity Task]
     return $ object ["tasks" .= tasks]
 
 postTasksR :: Handler ()
 postTasksR = do
     uid <- requireAuthId
     task <- requireJsonBody :: Handler Task
-    tid <- runDB $ insert task {taskUserId = uid}
-    sendResponseStatus status201 (T.pack ("CREATED:task:" ++ show tid))
+    tid <- runDB $ insert task
+    _   <- runDB $ insert (UserTask tid uid)
+    sendResponseStatus status201 ("CREATED" :: Text)
 
 getTaskR :: TaskId -> Handler Value
 getTaskR taskId = do

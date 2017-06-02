@@ -19,6 +19,11 @@ Task json
     dueDate Day
     happy Bool
     done Bool
+    deriving Eq Show
+
+UserTask
+    taskId TaskId
     userId UserId
+    UniqueUserTask taskId userId
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
