@@ -10,7 +10,7 @@ import ClassyPrelude         as X hiding (delete, deleteBy, Handler)
 import ClassyPrelude         as X hiding (delete, deleteBy)
 #endif
 import Database.Persist      as X hiding (get)
-import Database.Persist.Sql  (SqlPersistM, SqlBackend, runSqlPersistMPool, rawExecute, rawSql, unSingle, connEscapeName)
+import Database.Persist.Sql  (SqlPersistM, SqlBackend, runSqlPersistMPool, rawSql, unSingle)
 import Foundation            as X
 import Model                 as X
 import Test.Hspec            as X
@@ -24,6 +24,7 @@ import qualified Database.Sqlite as Sqlite
 import Control.Monad.Logger                 (runLoggingT)
 import Settings (appDatabaseConf)
 import Yesod.Core (messageLoggerSource)
+import System.Directory (doesFileExist, removeFile)
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
@@ -46,26 +47,9 @@ withApp = before $ do
 -- spec to run in.
 wipeDB :: App -> IO ()
 wipeDB app = do
-    -- In order to wipe the database, we need to temporarily disable foreign key checks.
-    -- Unfortunately, disabling FK checks in a transaction is a noop in SQLite.
-    -- Normal Persistent functions will wrap your SQL in a transaction,
-    -- so we create a raw SQLite connection to disable foreign keys.
-    -- Foreign key checks are per-connection, so this won't effect queries outside this function.
-
-    -- Aside: SQLite by default *does not enable foreign key checks*
-    -- (disabling foreign keys is only necessary for those who specifically enable them).
-    let settings = appSettings app
-    sqliteConn <- rawConnection (sqlDatabase $ appDatabaseConf settings)
-    disableForeignKeys sqliteConn
-
-    let logFunc = messageLoggerSource app (appLogger app)
-    pool <- runLoggingT (createSqlPool (wrapConnection sqliteConn) 1) logFunc
-
-    flip runSqlPersistMPool pool $ do
-        tables <- getTables
-        sqlBackend <- ask
-        let queries = map (\t -> "DELETE FROM " ++ (connEscapeName sqlBackend $ DBName t)) tables
-        forM_ queries (\q -> rawExecute q [])
+    let testDbFile = unpack $ sqlDatabase $ appDatabaseConf $ appSettings app
+    fileExists <- doesFileExist testDbFile
+    when fileExists $ removeFile testDbFile
 
 rawConnection :: Text -> IO Sqlite.Connection
 rawConnection t = Sqlite.open t
