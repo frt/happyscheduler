@@ -7,8 +7,7 @@ getTasksR :: Handler Value
 getTasksR = do
     uid <- requireAuthId
     userTasks <- runDB $ selectList [UserTaskUserId ==. uid] [] :: Handler [Entity UserTask]
---    tasks <- runDB $ selectList [Task <-. (map userTaskTaskId userTasks)] [] :: Handler [Entity Task]
-    tasks <- runDB $ selectList [] [] :: Handler [Entity Task]
+    tasks <- runDB $ selectList [TaskId <-. map (\(Entity _ userTask) -> userTaskTaskId userTask) userTasks] [] :: Handler [Entity Task]
     return $ object ["tasks" .= tasks]
 
 postTasksR :: Handler ()
