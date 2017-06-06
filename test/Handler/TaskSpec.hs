@@ -2,9 +2,10 @@ module Handler.TaskSpec (spec) where
 
 import TestImport
 import Data.Aeson (object, encode, decode, (.=))
-import qualified Database.Persist as DB (get)
+--import qualified Database.Persist as DB (get)
 import Data.Maybe
 import Network.Wai.Test (SResponse (..))
+import Data.Aeson.Types (FromJSON)
 
 sendTaskRequest :: Text -> Int -> Day -> Bool -> Bool -> YesodExample App ()
 sendTaskRequest name time dueDate happy done = do
@@ -22,6 +23,15 @@ sendTaskRequest name time dueDate happy done = do
         addRequestHeader ("Content-Type", "application/json")
     return ()
 
+assertJsonResponseIs :: (Show a, Eq a, FromJSON a) => a -> YesodExample App ()
+assertJsonResponseIs expected = do
+    statusIs 200
+    assertHeader "Content-Type" "application/json; charset=utf-8"
+
+    response <- getResponse
+    let actual = fromJust $ decode $ simpleBody $ fromJust response
+    assertEq "Response should be " expected actual
+
 spec :: Spec
 spec = withApp $ do
 
@@ -36,7 +46,7 @@ spec = withApp $ do
             authenticateAs userBar
             sendTaskRequest "bar task" 5 (fromGregorian 2017 06 23) True False
 
-            userBaz <- createUser "baz"
+            userBaz <- createUser "bVaz"
             authenticateAs userBaz
             sendTaskRequest "baz task" 5 (fromGregorian 2017 06 4) True False
 
@@ -44,10 +54,6 @@ spec = withApp $ do
             authenticateAs userBar
             get TasksR
 
-            statusIs 200
-            assertHeader "Content-Type" "application/json; charset=utf-8"
-            
-            response <- getResponse
             let expected = 
                     object [ "tasks" .= [ 
                         object [ "name" .= ("bar task" :: Text)
@@ -59,8 +65,7 @@ spec = withApp $ do
                                ]
                         ]
                    ]
-                actual = fromJust $ decode $ simpleBody $ fromJust response
-            assertEq "Response should be " expected actual
+            assertJsonResponseIs expected
 
     describe "postTasksR" $
         it "inserts user a task to the user foo" $ do
@@ -84,8 +89,25 @@ spec = withApp $ do
                                                }
             
     describe "getTaskR" $ 
-        it "Spec not implemented: getTaskR" $ 
-            const pending
+        it "Should get a task by Id." $ do
+            user <- createUser "foobar"
+            authenticateAs user
+            sendTaskRequest "foobar task" 7 (fromGregorian 2017 06 5) False True
+
+            -- assuming the database is empty and starting Ids from 1
+            get ("/tasks/1" :: Text) 
+
+            let expected = 
+                    object [ "task" .=
+                        object [ "name" .= ("foobar task" :: Text)
+                               , "time"      .= (7 :: Int)
+                               , "dueDate"   .= (fromGregorian 2017 6 5 :: Day)
+                               , "happy"     .= False
+                               , "done"      .= True
+                               , "id"        .= (1 :: Int)
+                               ]
+                   ]
+            assertJsonResponseIs expected
 
     describe "putTaskR" $ 
         it "Spec not implemented: putTaskR" $ 
