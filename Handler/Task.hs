@@ -25,9 +25,17 @@ getTaskR taskId = do
 
 putTaskR :: TaskId -> Handler Value
 putTaskR taskId = do
+    uid <- requireAuthId
     task <- requireJsonBody :: Handler Task
-    runDB $ replace taskId task
-    sendResponseStatus status200 ("UPDATED" :: Text)
+    maybeTask <- runDB $ get taskId
+    case maybeTask of
+         Nothing -> do 
+             runDB $ insertKey taskId task
+             runDB $ insert (UserTask taskId uid)
+             sendResponseStatus status201 ("CREATED" :: Text)
+         Just _ -> do
+             runDB $ replace taskId task
+             sendResponseStatus status200 ("UPDATED" :: Text)
 
 deleteTaskR :: TaskId -> Handler Value
 deleteTaskR taskId = do

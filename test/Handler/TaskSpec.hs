@@ -2,7 +2,8 @@ module Handler.TaskSpec (spec) where
 
 import TestImport
 import Data.Aeson (object, encode, decode, (.=))
---import qualified Database.Persist as DB (get)
+import qualified Database.Persist as DB (get)
+import Database.Persist.Sql (toSqlKey)
 import Data.Maybe
 import Network.Wai.Test (SResponse (..))
 import Data.Aeson.Types (FromJSON)
@@ -68,7 +69,7 @@ spec = withApp $ do
             assertJsonResponseIs expected
 
     describe "postTasksR" $
-        it "inserts user a task to the user foo" $ do
+        it "inserts a task to the user foo" $ do
             let name = "foo task" :: Text
                 time = 3 :: Int
                 dueDate = fromGregorian 2017 06 4 :: Day
@@ -89,7 +90,7 @@ spec = withApp $ do
                                                }
             
     describe "getTaskR" $ 
-        it "Should get a task by Id." $ do
+        it "gets a task by Id" $ do
             user <- createUser "foobar"
             authenticateAs user
             sendTaskRequest "foobar task" 7 (fromGregorian 2017 06 5) False True
@@ -109,9 +110,40 @@ spec = withApp $ do
                    ]
             assertJsonResponseIs expected
 
-    describe "putTaskR" $ 
-        it "Spec not implemented: putTaskR" $ 
-            const pending
+    describe "putTaskR" $
+        it "inserts a task with id=7 to the user bar" $ do
+            user <- createUser "bar"
+            authenticateAs user
+            let name    = "bar task" :: Text
+                time    = 5 :: Int
+                dueDate = fromGregorian 2017 06 8 :: Day
+                happy   = True :: Bool
+                done    = False :: Bool
+                body = object [ "name"      .= name
+                              , "time"      .= time
+                              , "dueDate"   .= dueDate
+                              , "happy"     .= happy
+                              , "done"      .= done
+                              ]
+                encoded = encode body
+            request $ do
+                setMethod "PUT"
+                setUrl ("/tasks/7" :: Text)
+                setRequestBody encoded
+                addRequestHeader ("Content-Type", "application/json")
+
+            statusIs 201
+            task <- runDB $ getJust (toSqlKey 7)
+            assertEq "Should have the task " task  Task { taskName = name
+                                               , taskTime = time
+                                               , taskDueDate = dueDate
+                                               , taskHappy = happy
+                                               , taskDone = done
+                                               }
+            [Entity _ userTask] <- runDB $ selectList [UserTaskTaskId ==. toSqlKey 7] []
+            user <- runDB $ getJust (userTaskUserId userTask)
+            assertEq "User should be " "bar" $ userIdent user
+            --assertEq "User should be " "bar" "bar"
 
     describe "deleteTaskR" $ 
         it "Spec not implemented: deleteTaskR" $
