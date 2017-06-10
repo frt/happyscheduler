@@ -37,11 +37,13 @@ spec :: Spec
 spec = withApp $ do
 
     describe "getTasksR" $ do
+
         it "gives a 200" $ do
             userEntity <- createUser "foo"
             authenticateAs userEntity
             get TasksR
             statusIs 200
+        
         it "gives only the tasks of the autheticated user" $ do
             userBar <- createUser "bar"
             authenticateAs userBar
@@ -69,6 +71,7 @@ spec = withApp $ do
             assertJsonResponseIs expected
 
     describe "postTasksR" $
+        
         it "inserts a task to the user foo" $ do
             let name = "foo task" :: Text
                 time = 3 :: Int
@@ -89,7 +92,8 @@ spec = withApp $ do
                                                , taskDone = done
                                                }
             
-    describe "getTaskR" $ 
+    describe "getTaskR" $ do
+        
         it "gets a task by Id" $ do
             user <- createUser "foobar"
             authenticateAs user
@@ -110,7 +114,14 @@ spec = withApp $ do
                    ]
             assertJsonResponseIs expected
 
+        it "returns 404 if the task doesn't exists" $ do
+            user <- createUser "foobaz"
+            authenticateAs user
+            get ("/tasks/2" :: Text) 
+            statusIs 404
+
     describe "putTaskR" $
+        
         it "inserts a task with id=7 to the user bar" $ do
             user <- createUser "bar"
             authenticateAs user
@@ -143,8 +154,20 @@ spec = withApp $ do
             [Entity _ userTask] <- runDB $ selectList [UserTaskTaskId ==. toSqlKey 7] []
             user <- runDB $ getJust (userTaskUserId userTask)
             assertEq "User should be " "bar" $ userIdent user
-            --assertEq "User should be " "bar" "bar"
 
     describe "deleteTaskR" $ 
-        it "Spec not implemented: deleteTaskR" $
-            const pending
+        
+        it "deletes a task by Id" $ do
+            user <- createUser "kill-9"
+            authenticateAs user
+            sendTaskRequest "2 young 2 die" 11 (fromGregorian 2017 06 9) True True
+            statusIs 201    -- task created
+
+            -- assuming the database is empty and starting Ids from 1
+            request $ do
+                setMethod "DELETE"
+                setUrl ("/tasks/1" :: Text)
+            statusIs 200    -- task deleted
+            
+            get ("/tasks/1" :: Text) 
+            statusIs 404    -- task not found

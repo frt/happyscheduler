@@ -20,8 +20,10 @@ postTasksR = do
 
 getTaskR :: TaskId -> Handler Value
 getTaskR taskId = do
-    task <- runDB $ get404 taskId
-    return $ object ["task" .= Entity taskId task]
+    task <- runDB $ get taskId
+    case task of
+         Just task' -> return $ object ["task" .= Entity taskId task']
+         Nothing -> sendResponseStatus status404 ("Not Found" :: Text)
 
 putTaskR :: TaskId -> Handler Value
 putTaskR taskId = do
@@ -39,5 +41,8 @@ putTaskR taskId = do
 
 deleteTaskR :: TaskId -> Handler Value
 deleteTaskR taskId = do
+    uid <-requireAuthId
+    [userTaskId] <- runDB $ selectKeysList [UserTaskTaskId ==. taskId, UserTaskUserId ==. uid] []
+    runDB $ delete userTaskId
     runDB $ delete taskId
     sendResponseStatus status200 ("DELETED" :: Text)
