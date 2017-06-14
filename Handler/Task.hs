@@ -1,7 +1,6 @@
 module Handler.Task where
 
 import Import
-import qualified Data.Text as T (pack) 
 
 getTasksR :: Handler Value
 getTasksR = do
@@ -33,7 +32,7 @@ putTaskR taskId = do
     case maybeTask of
          Nothing -> do 
              runDB $ insertKey taskId task
-             runDB $ insert (UserTask taskId uid)
+             _ <- runDB $ insert (UserTask taskId uid)
              sendResponseStatus status201 ("CREATED" :: Text)
          Just _ -> do
              runDB $ replace taskId task

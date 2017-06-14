@@ -75,7 +75,7 @@ makeFoundation appSettings = do
         (sqlPoolSize $ appDatabaseConf appSettings)
 
     -- Perform database migration using our application's logging settings.
-    runLoggingT (runSqlPool (runMigrationSilent migrateAll) pool) logFunc
+    _ <- runLoggingT (runSqlPool (runMigrationSilent migrateAll) pool) logFunc
 
     -- Return the foundation
     return $ mkFoundation pool
@@ -118,13 +118,18 @@ warpSettings foundation =
             (toLogStr $ "Exception from Warp: " ++ show e))
       defaultSettings
 
--- | For yesod devel, return the Warp settings and WAI Application.
-getApplicationDev :: IO (Settings, Application)
-getApplicationDev = do
+getApplication :: IO (Settings, App, Application)
+getApplication = do
     settings <- getAppSettings
     foundation <- makeFoundation settings
     wsettings <- getDevSettings $ warpSettings foundation
     app <- makeApplication foundation
+    return (wsettings, foundation, app)
+
+-- | For yesod devel, return the Warp settings and WAI Application.
+getApplicationDev :: IO (Settings, Application)
+getApplicationDev = do
+    (wsettings, _, app) <- getApplication
     return (wsettings, app)
 
 getAppSettings :: IO AppSettings
@@ -154,16 +159,12 @@ appMain = do
     -- Run the application with Warp
     runSettings (warpSettings foundation) app
 
-
 --------------------------------------------------------------
 -- Functions for DevelMain.hs (a way to run the app from GHCi)
 --------------------------------------------------------------
 getApplicationRepl :: IO (Int, App, Application)
 getApplicationRepl = do
-    settings <- getAppSettings
-    foundation <- makeFoundation settings
-    wsettings <- getDevSettings $ warpSettings foundation
-    app1 <- makeApplication foundation
+    (wsettings, foundation, app1) <- getApplication
     return (getPort wsettings, foundation, app1)
 
 shutdownApp :: App -> IO ()
