@@ -3,10 +3,12 @@
     <li *ngFor="let task of tasks">
         {{ task.name }}
         &nbsp;
-        <span 
-            class="task-face" 
-            [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}"
-            >{{ task.happy ? ':)' : ':(' }}
+        <span class="task-face" [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
+            {{ task.happy ? ':)' : ':(' }}
         </span>
     </li>
 </ul>
+<hr />
+<button type="button" class="btn btn-primary">
+    New Task
+</button>
