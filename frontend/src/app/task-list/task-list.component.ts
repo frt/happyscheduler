@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { Http } from '@angular/http';
 
 @Component({
-    selector: 'app-task_list',
-    templateUrl: './task_list.component.html',
-    styleUrls: ['./task_list.component.css']
+    selector: 'app-task-list',
+    templateUrl: './task-list.component.html',
+    styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent {
     tasks = [];

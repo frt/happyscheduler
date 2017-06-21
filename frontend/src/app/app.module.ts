@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { TaskListComponent } from './task_list/task_list.component';
+import { TaskListComponent } from './task-list/task-list.component';
 import { NewTaskComponent } from './new-task/new-task.component';
 
 @NgModule({
@@ -20,16 +20,16 @@ import { NewTaskComponent } from './new-task/new-task.component';
         HttpModule,
         RouterModule.forRoot([
             {
-                path: 'task_list',
+                path: 'task-list',
                 component: TaskListComponent
             },
             {
-                path: 'new_task',
+                path: 'new-task',
                 component: NewTaskComponent
             },
             {
                 path: '',
-                redirectTo: '/task_list',
+                redirectTo: '/task-list',
                 pathMatch: 'full'
             }
  
