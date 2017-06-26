@@ -1,6 +1,6 @@
 <app-root>Loading...
-<script type="text/javascript" src="http://localhost:4200/inline.bundle.js">
-<script type="text/javascript" src="http://localhost:4200/polyfills.bundle.js">
-<script type="text/javascript" src="http://localhost:4200/styles.bundle.js">
-<script type="text/javascript" src="http://localhost:4200/vendor.bundle.js">
-<script type="text/javascript" src="http://localhost:4200/main.bundle.js">
+<script type="text/javascript" src=@{StaticR frontend_inline_bundle_js}>
+<script type="text/javascript" src=@{StaticR frontend_polyfills_bundle_js}>
+<script type="text/javascript" src=@{StaticR frontend_styles_bundle_js}>
+<script type="text/javascript" src=@{StaticR frontend_vendor_bundle_js}>
+<script type="text/javascript" src=@{StaticR frontend_main_bundle_js}>
