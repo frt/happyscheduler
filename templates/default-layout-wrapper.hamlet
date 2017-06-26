@@ -9,7 +9,7 @@ $newline never
     <meta charset="UTF-8">
 
     <title>#{pageTitle pc}
-    <base href="/">
+    <base href="/frontend/">
     <meta name="description" content="Happy Scheduler: Procrastinate sadness, maximize happyness">
     <meta name="author" content="Fábio Roberto Teodoro <fr.teodoro@gmail.com>">
 
