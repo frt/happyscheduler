@@ -1,3 +1,16 @@
-<p>
-  new-task works!
-</p>
+<h1>New Task</h1>
+<form class="container" [formGroup]="newTaskForm" (ngSubmit)="onSubmit(newTaskForm.value)">
+    <input type="text" name="name" placeholder="task name" formControlName="name">
+    <select name="happy" formControlName="happy">
+        <option value="true">happy</option>
+        <option value="false">sad</option>
+    </select>
+    <input type="text" name="dueDate" placeholder="due date: yyyy-mm-dd" formControlName="dueDate">
+    <input type="text" name="time" placeholder="how many days?" formControlName="time">
+    <button type="submit" class="btn btn-primary" [disabled]="!newTaskForm.valid">
+        save the new task
+    </button>
+    <button type="button" class="btn btn-secondary" routerLink="/task-list">
+        back to the task list
+    </button>
+</form>

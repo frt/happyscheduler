@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Http } from '@angular/http';
 
 @Component({
   selector: 'app-new-task',
@@ -6,10 +8,36 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./new-task.component.css']
 })
 export class NewTaskComponent implements OnInit {
+    newTaskForm;
 
-  constructor() { }
+    constructor(private http : Http) {}
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        this.newTaskForm = new FormGroup({
+            name: new FormControl("", Validators.required),
+            happy: new FormControl("true"),
+            dueDate: new FormControl("", Validators.compose([
+                Validators.required,
+                Validators.pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
+            ])),
+            time: new FormControl("", Validators.compose([
+                Validators.required,
+                Validators.pattern('[0-9]+')
+            ]))
+        });
+    }
+    
+    onSubmit = function(newTask) {
+        var newTask = this.newTaskForm.value;
+        newTask.done = false;
+        newTask.happy = newTask.happy == "true";
+        newTask.time = Number(newTask.time);
+        this.http.post('http://localhost:3000/tasks', newTask).subscribe(
+            (data) => {
+                this.newTaskForm.reset();
+                console.log(data);
+            }
+        );
 
+    }
 }
