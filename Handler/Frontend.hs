@@ -4,5 +4,5 @@ import Import
 
 getFrontendR :: [Text] -> Handler Html
 getFrontendR _ = defaultLayout $ do
-        setTitle "Welcome Happy Scheduler!"
+        setTitle "happy scheduler"
         $(widgetFile "frontend")

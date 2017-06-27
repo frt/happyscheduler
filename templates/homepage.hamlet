@@ -1,6 +1,1 @@
-<app-root>Loading...
-<script type="text/javascript" src=@{StaticR frontend_inline_bundle_js}>
-<script type="text/javascript" src=@{StaticR frontend_polyfills_bundle_js}>
-<script type="text/javascript" src=@{StaticR frontend_styles_bundle_js}>
-<script type="text/javascript" src=@{StaticR frontend_vendor_bundle_js}>
-<script type="text/javascript" src=@{StaticR frontend_main_bundle_js}>
+<h1>Welcome to Happy Scheduler!</h1>

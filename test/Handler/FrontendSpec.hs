@@ -8,8 +8,8 @@ spec = withApp $
         it "loads the frontend index and checks it looks right" $ do
           userEntity <- createUser "baz"
           authenticateAs userEntity
-          get HomeR
+          get $ FrontendR ["foobar"]
           statusIs 200
+          htmlAllContain "title" "happy scheduler"
           htmlAnyContain "app-root" "Loading..."
-          htmlAllContain "title" "Welcome Happy Scheduler!"
 

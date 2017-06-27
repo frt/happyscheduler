@@ -132,7 +132,6 @@ instance Yesod App where
     authRoute _ = Just $ AuthR LoginR
 
     -- TODO: real authorization
-    isAuthorized HomeR _ = isAuthenticated
     isAuthorized ProfileR _ = isAuthenticated
     isAuthorized TasksR _ = isAuthenticated
     isAuthorized (TaskR _) _ = isAuthenticated
