@@ -142,6 +142,7 @@ instance Yesod App where
     isAuthorized TasksR _ = isAuthenticated
     isAuthorized (TaskR _) _ = isAuthenticated
     isAuthorized HomeR _ = isAuthenticated
+    isAuthorized (FrontendR _) _ = isAuthenticated
 
     isAuthorized ProfileR _ = isAuthenticated
 
@@ -182,6 +183,7 @@ instance YesodBreadcrumbs App where
   breadcrumb HomeR = return ("Home", Nothing)
   breadcrumb (AuthR _) = return ("Login", Just HomeR)
   breadcrumb ProfileR = return ("Profile", Just HomeR)
+  breadcrumb (FrontendR _) = return ("My Tasks", Nothing)
   breadcrumb  _ = return ("home", Nothing)
 
 -- How to run database actions.

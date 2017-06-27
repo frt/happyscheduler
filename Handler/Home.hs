@@ -11,7 +11,6 @@ import Import
 -- inclined, or create a single monolithic file.
 getHomeR :: Handler Html
 getHomeR = defaultLayout $ do
-        aDomId <- newIdent
         setTitle "Welcome Happy Scheduler!"
         $(widgetFile "homepage")
 
