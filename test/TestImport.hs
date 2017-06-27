@@ -79,3 +79,12 @@ createUser ident = do
         { userIdent = ident
         , userPassword = Nothing
         }
+
+getWithAuthenticatedUser :: Route App -> Text -> YesodExample App ()
+getWithAuthenticatedUser route user = do
+    userEntity <- createUser user
+    authenticateAs userEntity
+    get route
+    statusIs 200
+
+

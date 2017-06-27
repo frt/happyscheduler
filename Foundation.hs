@@ -96,6 +96,11 @@ instance Yesod App where
                     , menuItemRoute = ProfileR
                     , menuItemAccessCallback = isJust muser
                     }
+                , NavbarLeft MenuItem
+                    { menuItemLabel = "My Tasks"
+                    , menuItemRoute = FrontendR []
+                    , menuItemAccessCallback = isJust muser
+                    }
                 , NavbarRight MenuItem
                     { menuItemLabel = "Login"
                     , menuItemRoute = AuthR LoginR

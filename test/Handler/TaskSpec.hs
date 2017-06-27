@@ -38,11 +38,8 @@ spec = withApp $ do
 
     describe "getTasksR" $ do
 
-        it "gives a 200" $ do
-            userEntity <- createUser "foo"
-            authenticateAs userEntity
-            get TasksR
-            statusIs 200
+        it "gives a 200" $
+            getWithAuthenticatedUser TasksR "foo"
         
         it "gives only the tasks of the autheticated user" $ do
             userBar <- createUser "bar"

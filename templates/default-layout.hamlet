@@ -27,7 +27,7 @@
     $maybe msg <- mmsg
       <div .alert.alert-info #message>#{msg}
 
-^{widget}
+    ^{widget}
 
 <!-- Footer -->
 <footer .footer>
