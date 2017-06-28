@@ -3,7 +3,7 @@ module Handler.HomeSpec (spec) where
 import TestImport
 
 spec :: Spec
-spec = withApp $
+spec = withApp $ do
     describe "Homepage" $ do
         it "loads the index and checks it looks right" $ do
           get HomeR
@@ -19,3 +19,8 @@ spec = withApp $
           statusIs 200
           users <- runDB $ selectList ([] :: [Filter User]) []
           assertEq "user table empty" 0 $ length users
+
+    describe "default-layout" $ 
+        it "has a <hr> separating footer from content" $ do
+            get HomeR
+            htmlCount "footer.footer > hr" 1
