@@ -1,14 +1,17 @@
-<h1>TODO:</h1>
-<ul>
-    <li *ngFor="let task of tasks">
-        {{ task.name }}
-        &nbsp;
-        <span class="task-face" [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
-            {{ task.happy ? ':)' : ':(' }}
-        </span>
-    </li>
-</ul>
-<hr />
-<button type="button" class="btn btn-primary" routerLink="/new-task">
-    New Task
-</button>
+<div>
+    <h1>TODO:</h1>
+    <ul>
+        <li *ngFor="let task of tasks">
+            {{ task.name }}
+            &nbsp;
+            <span class="task-face" [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
+                {{ task.happy ? ':)' : ':(' }}
+            </span>
+        </li>
+    </ul>
+</div>
+<div>
+    <button type="button" class="btn btn-primary" routerLink="/new-task">
+        New Task
+    </button>
+</div>
