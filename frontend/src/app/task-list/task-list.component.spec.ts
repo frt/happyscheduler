@@ -24,7 +24,6 @@ describe('TaskListComponent', () => {
     it('should not have an <hr> element',  async(() => {
         const fixture = TestBed.createComponent(TaskListComponent);
         const nodes = fixture.debugElement.nativeElement;
-        console.log(nodes.querySelectorAll('hr'));
         expect(nodes.querySelectorAll('hr').length).toEqual(0);
     }));
 });
