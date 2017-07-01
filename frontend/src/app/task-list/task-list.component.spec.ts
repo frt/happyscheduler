@@ -15,9 +15,6 @@ describe('TaskListComponent', () => {
             imports: [
                 RouterTestingModule,
                 HttpModule
-            ],
-            providers : [
-                HttpModule,
             ]
         }).compileComponents();
     }));

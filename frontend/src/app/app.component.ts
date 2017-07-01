@@ -10,7 +10,4 @@ export class AppComponent {
 
     constructor(public messagesService: InfoMessagesService) {}
 
-    infoMessage(message: string): void {
-        this.messagesService._infoMessage = message;
-    }
 }
