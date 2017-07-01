@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
+import { InfoMessagesService } from '../info-messages.service'
 
 @Component({
-  selector: 'app-new-task',
-  templateUrl: './new-task.component.html',
-  styleUrls: ['./new-task.component.css']
+    selector: 'app-new-task',
+    templateUrl: './new-task.component.html',
+    styleUrls: ['./new-task.component.css']
 })
 export class NewTaskComponent implements OnInit {
     newTaskForm;
 
-    constructor(private http : Http) {}
+    constructor(private http : Http, private messagesService: InfoMessagesService) {}
 
     ngOnInit() {
         this.newTaskForm = new FormGroup({
@@ -34,8 +35,8 @@ export class NewTaskComponent implements OnInit {
         newTask.time = Number(newTask.time);
         this.http.post('http://localhost:3000/tasks', newTask).subscribe(
             (data) => {
+                this.messagesService._infoMessage = 'new task created!';
                 this.newTaskForm.reset();
-                console.log(data);
             }
         );
 
