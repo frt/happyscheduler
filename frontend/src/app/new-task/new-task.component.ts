@@ -9,7 +9,7 @@ import { InfoMessagesService } from '../info-messages.service'
     styleUrls: ['./new-task.component.css']
 })
 export class NewTaskComponent implements OnInit {
- vascript string match regex   newTaskForm;
+    newTaskForm;
 
     constructor(private http : Http, private messagesService: InfoMessagesService) {}
 
