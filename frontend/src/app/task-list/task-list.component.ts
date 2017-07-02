@@ -6,15 +6,15 @@ import { Http } from '@angular/http';
     templateUrl: './task-list.component.html',
     styleUrls: ['./task-list.component.css']
 })
-export class TaskListComponent {
+export class TaskListComponent implements OnInit {
     tasks = [];
 
-    constructor(private http : Http) {}
+    constructor(private http: Http) {}
 
     ngOnInit() {
         this.fetchTasks();
     }
-    
+
     fetchTasks() {
         this.http.get('http://localhost:3000/tasks').subscribe(
             (data) => {

@@ -41,7 +41,6 @@ describe('AppComponent', () => {
       const element = fixture.nativeElement;
       app.messagesService.infoMessage = '';
       fixture.detectChanges();
-      console.log(element.querySelector('div.alert.alert-info#message'));
       expect(element.querySelector('div.alert.alert-info#message'))
           .toBeNull();
   }));
