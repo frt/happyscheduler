@@ -17,9 +17,8 @@ export class TaskListComponent implements OnInit {
 
     fetchTasks() {
         this.http.get('http://localhost:3000/tasks').subscribe(
-            (data) => {
-                this.tasks = JSON.parse(data['_body']).tasks;
-            }
+            data => this.tasks = JSON.parse(data['_body']).tasks,
+            error => alert('An error occurred: ' + error)
         );
     }
 }

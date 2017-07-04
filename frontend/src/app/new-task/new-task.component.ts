@@ -36,7 +36,8 @@ export class NewTaskComponent implements OnInit {
             (data) => {
                 this.newTaskForm.reset();
                 this.messagesService.infoMessage = 'new task created! ' + newTask.name;
-            }
+            },
+            error => alert('An error occurred: ' + error)
         );
     };
 }
