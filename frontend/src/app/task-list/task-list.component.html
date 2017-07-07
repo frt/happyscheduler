@@ -1,14 +1,21 @@
 <div>
     <h1>TODO:</h1>
-    <ul>
-        <li *ngFor="let task of tasks">
+    <table>
+        <tr *ngFor="let task of tasks">
+            <td>
             {{ task.name }}
-            &nbsp;
-            <span class="task-face" [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
+            </td>
+            <td class="task-face" 
+                [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
                 {{ task.happy ? ':)' : ':(' }}
-            </span>
-        </li>
-    </ul>
+            </td>
+            <td class="task-remove">
+                <button class="btn btn-default btn-xs">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+            </td>
+        </tr>
+    </table>
 </div>
 <div>
     <button type="button" class="btn btn-primary" routerLink="/new-task">

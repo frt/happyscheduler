@@ -1,22 +1,24 @@
-ul {
-    display: block;
+tr {
+    /*display: block;
     list-style-position: outside;
-    width: -moz-fit-content;
+    width: -moz-fit-content;*/
 }
 
-li {
+tr {
     border-bottom: 1px solid darkgray;
-    line-height: normal;
-    margin: 0 5px 0 5px;
-    padding: 5px 0 5px 0;
 }
  
-li:last-child {
+tr:last-child {
     border: none;
 }
 
+td {
+    line-height: normal;
+    margin: 0 5px 0 5px;
+    padding: 5px;
+}
+
 .task-face {
-    float: right;
     padding: 0 5px 0 5px;
 }
 
