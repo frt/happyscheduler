@@ -25,11 +25,13 @@ describe('TaskListComponent', () => {
         expect(nodes.querySelectorAll('hr').length).toEqual(0);
     }));
 
-    // TODO inject a mock to the http service to inspect that the requests are right
     it('should have a delete button for each task', async(() => {
         const fixture = TestBed.createComponent(TaskListComponent);
         const nodes = fixture.debugElement.nativeElement;
-        expect(nodes.querySelectorAll('button > .gliphicon-remove').length)
+
+        fixture.componentInstance.tasks = [{name: 'test remove', happy: true}];
+        fixture.detectChanges();
+        expect(nodes.querySelectorAll('button > .glyphicon-remove').length)
             .toBeGreaterThan(0);
     }));
 });
