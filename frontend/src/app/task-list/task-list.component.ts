@@ -21,4 +21,11 @@ export class TaskListComponent implements OnInit {
             error => alert('An error occurred: ' + error)
         );
     }
+
+    onDeleteClick(id: number) {
+        this.http.delete('../tasks/' + id).subscribe(
+            () => this.tasks = this.tasks.filter(task => task.id !== id),
+            error => alert('An error occurred: ' + error)
+        );
+    }
 }

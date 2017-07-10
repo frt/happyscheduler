@@ -1,7 +1,7 @@
 <div>
     <h1>TODO:</h1>
     <table>
-        <tr *ngFor="let task of tasks">
+        <tr *ngFor="let task of tasks" class="task-item">
             <td>
             {{ task.name }}
             </td>
@@ -10,8 +10,8 @@
                 {{ task.happy ? ':)' : ':(' }}
             </td>
             <td>
-                <button class="btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-remove"></span>
+                <button class="btn btn-default btn-xs glyphicon glyphicon-remove"
+                    (click)="onDeleteClick(task.id)">
                 </button>
             </td>
         </tr>
