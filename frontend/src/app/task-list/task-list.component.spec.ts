@@ -53,6 +53,11 @@ describe('TaskListComponent', () => {
             .toBeGreaterThan(0);
     }));
 
+    it('should have a done button when there is more than 0 tasks', async(() => {
+        expect(el.querySelectorAll('button.glyphicon-ok').length)
+            .toBeGreaterThan(0);
+    }));
+
     it('should delete a task when delete button is clicked', async(() => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'delete').and.returnValue(Observable.of('DELETED'));
