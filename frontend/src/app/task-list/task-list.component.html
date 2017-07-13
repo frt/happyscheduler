@@ -11,7 +11,8 @@
             </td>
             <td>
                 <button id="done-task-{{task.id}}"
-                        class="btn btn-default btn-xs glyphicon glyphicon-ok">
+                        class="btn btn-default btn-xs glyphicon glyphicon-ok"
+                        (click)="onDoneClick(task.id)">
                 </button>
             </td>
             <td>

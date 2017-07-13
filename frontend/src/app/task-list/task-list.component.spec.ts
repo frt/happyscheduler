@@ -16,6 +16,7 @@ describe('TaskListComponent', () => {
     let fixture;
     let component: TaskListComponent;
     let el;
+    let initialNrOfTasks;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -37,17 +38,20 @@ describe('TaskListComponent', () => {
         // tasks array example:
         component.tasks = [{
             time: 30,
+            dueDate: '2017-08-01',
             done: false,
             name: 'test remove',
             id: 1,
             happy: true
         }, {
             time: 31,
+            dueDate: '2017-08-03',
             done: false,
             name: 'test done',
             id: 2,
             happy: true
         }];
+        initialNrOfTasks = component.tasks.length;
     }));
 
     it('should not have an <hr> element',  async(() => {
@@ -67,15 +71,32 @@ describe('TaskListComponent', () => {
     it('should delete a task when delete button is clicked', async(() => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'delete').and.returnValue(Observable.of('DELETED'));
-        const initialNrOfTasks = component.tasks.length;
 
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
 
         // click on the delete button of the first task
-        fixture.debugElement.query(By.css('button.glyphicon-remove')).triggerEventHandler('click', null);
+        fixture.debugElement.query(By.css('button#delete-task-1')).triggerEventHandler('click', null);
         fixture.detectChanges();
 
         expect(http.delete).toHaveBeenCalledWith('../tasks/1');
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks - 1);
+    }));
+
+    it('should mark a task as done when done button is clicked', async(() => {
+        const http = fixture.debugElement.injector.get(Http);
+        spyOn(http, 'put').and.returnValue(Observable.of('UPDATED'));
+
+        expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
+
+        fixture.debugElement.query(By.css('button#done-task-2'))
+            .triggerEventHandler('click', null);
+        fixture.detectChanges();
+
+        expect(http.put).toHaveBeenCalledWith('../tasks/2',
+            '{"time":31,"dueDate":"2017-08-03","done":true,"name":"test done","id":2,"happy":true}');
+        expect(el.querySelectorAll('.task-item').length)
+            .toEqual(initialNrOfTasks - 1);    // will take the task
+                                              // out of the list
+                                              // for now
     }));
 });
