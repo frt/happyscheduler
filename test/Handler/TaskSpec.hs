@@ -2,7 +2,7 @@ module Handler.TaskSpec (spec) where
 
 import TestImport
 import Data.Aeson (object, encode, decode, (.=))
-import qualified Database.Persist as DB (get)
+--import qualified Database.Persist as DB (get)
 import Database.Persist.Sql (toSqlKey)
 import Data.Maybe
 import Network.Wai.Test (SResponse (..))
@@ -62,6 +62,27 @@ spec = withApp $ do
                                , "happy"     .= True
                                , "done"      .= False
                                , "id"        .= (1 :: Int)
+                               ]
+                        ]
+                   ]
+            assertJsonResponseIs expected
+
+        it "gives only the tasks not done" $ do
+            userBar <- createUser "bar"
+            authenticateAs userBar
+            sendTaskRequest "bar task" 5 (fromGregorian 2017 06 23) True True
+            sendTaskRequest "baz task" 5 (fromGregorian 2017 06 4) True False
+
+            get TasksR
+
+            let expected = 
+                    object [ "tasks" .= [ 
+                        object [ "name" .= ("baz task" :: Text)
+                               , "time"      .= (5 :: Int)
+                               , "dueDate"   .= (fromGregorian 2017 6 4 :: Day)
+                               , "happy"     .= True
+                               , "done"      .= False
+                               , "id"        .= (2 :: Int)
                                ]
                         ]
                    ]
@@ -149,8 +170,8 @@ spec = withApp $ do
                                                , taskDone = done
                                                }
             [Entity _ userTask] <- runDB $ selectList [UserTaskTaskId ==. toSqlKey 7] []
-            user <- runDB $ getJust (userTaskUserId userTask)
-            assertEq "User should be " "bar" $ userIdent user
+            taskOwner <- runDB $ getJust (userTaskUserId userTask)
+            assertEq "User should be " "bar" $ userIdent taskOwner
 
     describe "deleteTaskR" $ 
         
