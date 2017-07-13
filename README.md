@@ -2,8 +2,21 @@
 
 Procrastinate sadness, maximize happyness.
 
-## frontend
+## Frontend
 
-The frontend of this application is inside static/frontend, look for the
+The frontend of this application is inside `frontend` directory, look for the
 README.md there to know how to build the frontend, wich is necessary to use
 this application.
+
+Executing the following commands should build the frontend and put it's bundle's
+where they are needed.
+
+    cd frontend
+    ng build --output-path ../static/frontend
+
+## Backend
+
+To execute it in "development mode" just do the following, after the frontend was
+built.
+
+    stack exec -- yesod devel
