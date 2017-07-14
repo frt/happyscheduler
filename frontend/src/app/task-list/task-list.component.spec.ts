@@ -68,6 +68,17 @@ describe('TaskListComponent', () => {
             .toBeGreaterThan(0);
     }));
 
+    it('should have a due date column', async(() => {
+        // second column header
+        expect(el.querySelector('table.table thead tr td:nth-child(2)').textContent)
+            .toEqual('due date');
+
+        // first line, second column
+        expect(el.querySelector('table.table tbody tr td:nth-child(2)').textContent)
+            .toContain('2017-08-01');
+    }));
+
+
     it('should delete a task when delete button is clicked', async(() => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'delete').and.returnValue(Observable.of('DELETED'));
@@ -75,7 +86,8 @@ describe('TaskListComponent', () => {
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
 
         // click on the delete button of the first task
-        fixture.debugElement.query(By.css('button#delete-task-1')).triggerEventHandler('click', null);
+        fixture.debugElement.query(By.css('button#delete-task-1'))
+            .triggerEventHandler('click', null);
         fixture.detectChanges();
 
         expect(http.delete).toHaveBeenCalledWith('../tasks/1');

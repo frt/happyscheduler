@@ -1,27 +1,40 @@
 <div>
+    <div class="col-xs-6">
     <h1>TODO:</h1>
-    <table>
-        <tr *ngFor="let task of tasks" class="task-item">
-            <td>
-            {{ task.name }}
-            </td>
-            <td class="task-face"
-                [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
-                {{ task.happy ? ':)' : ':(' }}
-            </td>
-            <td>
-                <button id="done-task-{{task.id}}"
-                        class="btn btn-default btn-xs glyphicon glyphicon-ok"
-                        (click)="onDoneClick(task.id)">
-                </button>
-            </td>
-            <td>
-                <button id="delete-task-{{task.id}}" 
-                        class="btn btn-default btn-xs glyphicon glyphicon-remove"
-                    (click)="onDeleteClick(task.id)">
-                </button>
-            </td>
-        </tr>
+    <table class="table">
+        <thead>
+            <tr>
+                <td></td>
+                <td id="due-date-header">due date</td>
+                <td colspan="2"></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of tasks" class="task-item">
+                <td>
+                {{ task.name }}
+                </td>
+                <td>
+                    {{ task.dueDate }}
+                </td>
+                <td class="task-face"
+                    [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
+                    {{ task.happy ? ':)' : ':(' }}
+                </td>
+                <td>
+                    <button id="done-task-{{task.id}}"
+                            class="btn btn-default btn-xs glyphicon glyphicon-ok"
+                            (click)="onDoneClick(task.id)">
+                    </button>
+                </td>
+                <td>
+                    <button id="delete-task-{{task.id}}" 
+                            class="btn btn-default btn-xs glyphicon glyphicon-remove"
+                        (click)="onDeleteClick(task.id)">
+                    </button>
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>
 <div>
