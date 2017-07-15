@@ -10,20 +10,11 @@ import Yesod.Auth.GoogleEmail2
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
 
-import Data.Default         (def)
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Text.Encoding as TE
-
--- Replace with Google client ID.
--- clientId :: Text
-clientId = "158699233750-mvia4suakhhohc99pared9pd3dne0a38.apps.googleusercontent.com"
-
--- Replace with Google secret ID.
--- clientSecret :: Text
-clientSecret = "FrYnhHjz_dMT-x0bkCifH9F8"
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -214,7 +205,8 @@ instance YesodAuth App where
                 }
 
     -- You can add other plugins like Google Email, email or OAuth here
-    authPlugins app = authGoogleEmail clientId clientSecret : extraAuthPlugins
+    authPlugins app = authGoogleEmail (appGAuthClientId $ appSettings app) 
+                        (appGAuthClientSecret $ appSettings app) : extraAuthPlugins
         -- Enable authDummy login if enabled.
         where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
 

@@ -20,6 +20,13 @@ ip-from-header: "_env:IP_FROM_HEADER:false"
 # skip-combining: false
 # auth-dummy-login : false
 
+# Google authentication settings
+#
+# Google client ID.
+gauth-client-id: "_env:GAUTH_CLIENT_ID:158699233750-mvia4suakhhohc99pared9pd3dne0a38.apps.googleusercontent.com"
+# Google secret ID.
+gauth-client-secret: "_env:GAUTH_CLIENT_SECRET:FrYnhHjz_dMT-x0bkCifH9F8"
+
 # NB: If you need a numeric value (e.g. 123) to parse as a String, wrap it in single quotes (e.g. "_env:PGPASS:'123'")
 # See https://github.com/yesodweb/yesod/wiki/Configuration#parsing-numeric-values-as-strings
 
