@@ -1,44 +1,47 @@
-<div>
-    <div class="col-xs-6">
-    <h1>TODO:</h1>
-    <table class="table">
-        <thead>
-            <tr>
-                <td></td>
-                <td id="due-date-header">due date</td>
-                <td colspan="2"></td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let task of tasks" class="task-item">
-                <td>
-                {{ task.name }}
-                </td>
-                <td>
-                    {{ task.dueDate }}
-                </td>
-                <td class="task-face"
-                    [ngClass]="{'task-happy' : task.happy, 'task-sad' : !task.happy}">
-                    {{ task.happy ? ':)' : ':(' }}
-                </td>
-                <td>
-                    <button id="done-task-{{task.id}}"
-                            class="btn btn-default btn-xs glyphicon glyphicon-ok"
-                            (click)="onDoneClick(task.id)">
-                    </button>
-                </td>
-                <td>
-                    <button id="delete-task-{{task.id}}" 
-                            class="btn btn-default btn-xs glyphicon glyphicon-remove"
-                        (click)="onDeleteClick(task.id)">
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div>
-    <button type="button" class="btn btn-primary" routerLink="/new-task">
-        New Task
-    </button>
+<div class="content">
+    <div row="row">
+        <div class="col-xs-6">
+        <h1>TODO:</h1>
+        <table class="table table-hover">
+            <thead class="table table-header">
+                <tr>
+                    <th></th>
+                    <th class="text-center text-nowrap">due date</th>
+                    <th colspan="2"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let task of tasks" class="task-item">
+                    <td>
+                    {{ task.name }}
+                    </td>
+                    <td class="text-center text-nowrap">
+                        {{ task.dueDate }}
+                    </td>
+                    <td>
+                        <span
+                            [ngClass]="{'icon-happy' : task.happy, 'icon-sad' : !task.happy}">
+                        </span>
+                    </td>
+                    <td class="text-nowrap pull-right">  
+                        <button id="done-task-{{task.id}}"
+                                class="btn btn-default btn-xs glyphicon glyphicon-ok"
+                                (click)="onDoneClick(task.id)">
+                        </button>
+                        <button id="delete-task-{{task.id}}" 
+                                class="btn btn-default btn-xs glyphicon glyphicon-remove"
+                            (click)="onDeleteClick(task.id)">
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <button type="button" class="btn btn-primary" routerLink="/new-task">
+                New Task
+            </button>
+        </div>
+    </div>
 </div>

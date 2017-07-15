@@ -1,5 +1,5 @@
 tr {
-    border-bottom: 1px solid darkgray;
+    border-bottom: 1px solid lightgray;
 }
  
 tr:last-child {
@@ -7,19 +7,24 @@ tr:last-child {
 }
 
 td {
-    line-height: normal;
-    margin: 0 5px 0 5px;
-    padding: 5px;
+    line-height: 1 !important;
+    vertical-align: middle !important;
 }
 
-.task-face {
-    padding: 0 5px 0 5px;
-}
-
-.task-happy {
+.icon-happy:before {
     background-color: yellow;
+    content: "\1f642";
+    font-size: 25px;
+    border-radius: 0.6em;
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
-.task-sad {
+.icon-sad:before {
     background-color: lightgrey;
+    content: "\1f641";
+    font-size: 25px;
+    border-radius: 0.6em;
+    padding-left: 1px;
+    padding-right: 1px;
 }

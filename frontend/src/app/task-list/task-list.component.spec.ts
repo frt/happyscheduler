@@ -70,7 +70,7 @@ describe('TaskListComponent', () => {
 
     it('should have a due date column', async(() => {
         // second column header
-        expect(el.querySelector('table.table thead tr td:nth-child(2)').textContent)
+        expect(el.querySelector('table.table thead tr th:nth-child(2)').textContent)
             .toEqual('due date');
 
         // first line, second column
