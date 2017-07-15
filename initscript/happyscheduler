@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+GAUTH_CLIENT_ID='<id>'
+GAUTH_CLIENT_SECRET='<secret>'
+
+export GAUTH_CLIENT_ID GAUTH_CLIENT_SECRET
+
+happyscheduler_executable="./happyscheduler"
+
+if [ -x "$happyscheduler_executable" ]; then
+    exec $happyscheduler_executable &
+else
+    echo "Executable not found: '${happyscheduler_executable}'"
+fi
