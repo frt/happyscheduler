@@ -68,10 +68,10 @@ describe('TaskListComponent', () => {
             .toBeGreaterThan(0);
     }));
 
-    it('should have a due date column', async(() => {
+    it('should have a deadline column', async(() => {
         // second column header
         expect(el.querySelector('table.table thead tr th:nth-child(2)').textContent)
-            .toEqual('due date');
+            .toEqual('deadline');
 
         // first line, second column
         expect(el.querySelector('table.table tbody tr td:nth-child(2)').textContent)
