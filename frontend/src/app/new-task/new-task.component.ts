@@ -32,7 +32,7 @@ export class NewTaskComponent implements OnInit {
         newTask.done = false;
         newTask.happy = newTask.happy === 'true';
         newTask.time = Number(newTask.time);
-        this.http.post('http://localhost:3000/tasks', newTask).subscribe(
+        this.http.post('../tasks', newTask).subscribe(
             (data) => {
                 this.newTaskForm.reset();
                 this.messagesService.infoMessage = 'new task created! ' + newTask.name;
