@@ -1,14 +1,20 @@
 #!/bin/bash -e
 
-GAUTH_CLIENT_ID='<id>'
-GAUTH_CLIENT_SECRET='<secret>'
-
-export GAUTH_CLIENT_ID GAUTH_CLIENT_SECRET
+export GAUTH_CLIENT_ID='<Client ID>'
+export GAUTH_CLIENT_SECRET='<Client secret>'
+export PORT="80"
 
 happyscheduler_executable="./happyscheduler"
 
 if [ -x "$happyscheduler_executable" ]; then
-    exec $happyscheduler_executable &
+
+    # note to myself about the 'echo $!'
+    # $!  Process ID of the last (righ-most for pipelines) command in the most 
+    #	  recently job put into the background (note that it's not 
+    #	  necessarily the same as the job's process group ID when job control is enabled)
+
+    pid=$($happyscheduler_executable > /dev/null 2>&1 & echo $!)
+    echo "$pid" > $happyscheduler_executable.pid
 else
     echo "Executable not found: '${happyscheduler_executable}'"
 fi
