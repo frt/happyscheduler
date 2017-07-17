@@ -1,5 +1,6 @@
 tr {
     border-bottom: 1px solid lightgray;
+    vertical-align: middle !important;
 }
  
 tr:last-child {
