@@ -59,12 +59,12 @@ describe('TaskListComponent', () => {
     }));
 
     it('should have a delete button', async(() => {
-        expect(el.querySelectorAll('button#delete-task-1.glyphicon-remove').length)
+        expect(el.querySelectorAll('button#delete-task-1').length)
             .toBeGreaterThan(0);
     }));
 
     it('should have a done button', async(() => {
-        expect(el.querySelectorAll('button#done-task-2.glyphicon-ok').length)
+        expect(el.querySelectorAll('button#done-task-2').length)
             .toBeGreaterThan(0);
     }));
 
@@ -77,7 +77,6 @@ describe('TaskListComponent', () => {
         expect(el.querySelector('table.table tbody tr td:nth-child(2)').textContent)
             .toContain('2017-08-01');
     }));
-
 
     it('should delete a task when delete button is clicked', async(() => {
         const http = fixture.debugElement.injector.get(Http);

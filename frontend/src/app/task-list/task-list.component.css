@@ -1,15 +1,9 @@
 tr {
     border-bottom: 1px solid lightgray;
-    vertical-align: middle !important;
 }
  
 tr:last-child {
     border: none;
-}
-
-td {
-    line-height: 1 !important;
-    vertical-align: middle !important;
 }
 
 .icon-happy:before {
