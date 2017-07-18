@@ -181,3 +181,4 @@ test-suite test
                  , aeson
                  , directory
                  , wai-extra
+                 , microlens

@@ -10,7 +10,13 @@ import ClassyPrelude         as X hiding (delete, deleteBy, Handler)
 import ClassyPrelude         as X hiding (delete, deleteBy)
 #endif
 import Database.Persist      as X hiding (get)
-import Database.Persist.Sql  (SqlPersistM, SqlBackend, runSqlPersistMPool, rawSql, unSingle)
+import Database.Persist.Sql  ( SqlPersistM
+                             , SqlBackend
+                             , runSqlPersistMPool
+                             , rawSql
+                             , rawExecute
+                             , unSingle
+                             , connEscapeName )
 import Foundation            as X
 import Model                 as X
 import Test.Hspec            as X
@@ -19,12 +25,18 @@ import Yesod.Auth            as X
 import Yesod.Test            as X
 
 -- Wiping the database
-import Database.Persist.Sqlite              (sqlDatabase, wrapConnection, createSqlPool)
+import Database.Persist.Sqlite ( sqlDatabase
+                               , wrapConnection
+                               , createSqlPool
+                               , wrapConnectionInfo
+                               , mkSqliteConnectionInfo
+                               , fkEnabled)
 import qualified Database.Sqlite as Sqlite
 import Control.Monad.Logger                 (runLoggingT)
 import Settings (appDatabaseConf)
 import Yesod.Core (messageLoggerSource)
 import System.Directory (doesFileExist, removeFile)
+import Lens.Micro (set)
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
@@ -47,9 +59,19 @@ withApp = before $ do
 -- spec to run in.
 wipeDB :: App -> IO ()
 wipeDB app = do
-    let testDbFile = unpack $ sqlDatabase $ appDatabaseConf $ appSettings app
-    fileExists <- doesFileExist testDbFile
-    when fileExists $ removeFile testDbFile
+    let settings = appSettings app
+        logFunc = messageLoggerSource app (appLogger app)
+
+    sqliteConn <- rawConnection (sqlDatabase $ appDatabaseConf settings)
+    let infoNoFK = set fkEnabled False $ mkSqliteConnectionInfo ""
+        wrapper = wrapConnectionInfo infoNoFK sqliteConn
+    pool <- runLoggingT (createSqlPool wrapper 1) logFunc
+
+    flip runSqlPersistMPool pool $ do
+        tables <- getTables
+        sqlBackend <- ask
+        let queries = map (\t -> "DELETE FROM " ++ (connEscapeName sqlBackend $ DBName t)) tables
+        forM_ queries (\q -> rawExecute q [])
 
 rawConnection :: Text -> IO Sqlite.Connection
 rawConnection t = Sqlite.open t
