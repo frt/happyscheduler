@@ -1,15 +1,14 @@
 tr {
-    border-bottom: 1px solid lightgray;
+    border-top: 1px solid lightgray;
 }
- 
-tr:last-child {
-    border: none;
+
+thead > tr {
+    border-top: none;
 }
 
 .icon-happy:before {
     background-color: yellow;
     content: "\1f642";
-    font-size: 25px;
     border-radius: 0.6em;
     padding-left: 1px;
     padding-right: 1px;
@@ -18,7 +17,6 @@ tr:last-child {
 .icon-sad:before {
     background-color: lightgrey;
     content: "\1f641";
-    font-size: 25px;
     border-radius: 0.6em;
     padding-left: 1px;
     padding-right: 1px;
