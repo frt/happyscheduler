@@ -1,10 +1,7 @@
 #!/bin/bash -e
 
-export GAUTH_CLIENT_ID='<Client ID>'
-export GAUTH_CLIENT_SECRET='<Client secret>'
-export PORT="80"
-
 happyscheduler_executable="./happyscheduler"
+settings_file="config/prod-settings.yml"
 
 if [ -x "$happyscheduler_executable" ]; then
 
@@ -13,7 +10,7 @@ if [ -x "$happyscheduler_executable" ]; then
     #	  recently job put into the background (note that it's not 
     #	  necessarily the same as the job's process group ID when job control is enabled)
 
-    pid=$($happyscheduler_executable > /dev/null 2>&1 & echo $!)
+    pid=$($happyscheduler_executable $settings_file > $happyscheduler_executable.log 2>&1 & echo $!)
     echo "$pid" > $happyscheduler_executable.pid
 else
     echo "Executable not found: '${happyscheduler_executable}'"
