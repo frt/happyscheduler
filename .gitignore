@@ -3,7 +3,7 @@ static/tmp/
 static/combined/
 static/frontend/
 config/client_session_key.aes
-config/prod-settings.yml
+config/keter.yml
 *.hi
 *.o
 *.sqlite3
