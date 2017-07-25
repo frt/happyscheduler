@@ -26,7 +26,6 @@ import Yesod.Test            as X
 
 -- Wiping the database
 import Database.Persist.Sqlite ( sqlDatabase
-                               , wrapConnection
                                , createSqlPool
                                , wrapConnectionInfo
                                , mkSqliteConnectionInfo
@@ -35,7 +34,6 @@ import qualified Database.Sqlite as Sqlite
 import Control.Monad.Logger                 (runLoggingT)
 import Settings (appDatabaseConf)
 import Yesod.Core (messageLoggerSource)
-import System.Directory (doesFileExist, removeFile)
 import Lens.Micro (set)
 
 runDB :: SqlPersistM a -> YesodExample App a

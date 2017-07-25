@@ -1,2 +1,2 @@
 #!/bin/sh
-stack test --file-watch --fast --test-arguments="--format=progress --rerun --rerun-all-on-success --failure-report=/tmp/.hspec-failures"
+stack test --file-watch --fast --test-arguments="--rerun --rerun-all-on-success --failure-report=/tmp/.hspec-failures"

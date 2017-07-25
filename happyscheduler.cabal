@@ -35,6 +35,7 @@ library
                      Handler.Profile
                      Handler.Task
                      Handler.Frontend
+                     HappyScheduler
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -136,12 +137,13 @@ executable         happyscheduler
 test-suite test
     type:              exitcode-stdio-1.0
     main-is:           Spec.hs
-    other-modules:     Handler.CommonSpec
+    other-modules:     TestImport
+                       Handler.CommonSpec
                        Handler.HomeSpec
                        Handler.ProfileSpec
                        Handler.TaskSpec
                        Handler.FrontendSpec
-                       TestImport
+                       HappySchedulerSpec
     hs-source-dirs:    test
     ghc-options:       -Wall
 
@@ -182,3 +184,5 @@ test-suite test
                  , directory
                  , wai-extra
                  , microlens
+                 , time
+                 , text
