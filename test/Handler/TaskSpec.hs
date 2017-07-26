@@ -56,13 +56,15 @@ spec = withApp $ do
 
             let expected = 
                     object [ "tasks" .= [ 
-                        object [ "name" .= ("bar task" :: Text)
-                               , "time"      .= (5 :: Int)
-                               , "deadline"   .= (fromGregorian 2017 6 23 :: Day)
-                               , "happy"     .= True
-                               , "done"      .= False
-                               , "id"        .= (1 :: Int)
-                               ]
+                        object [ "scheduledStartDate" .= (fromGregorian 2017 06 18 :: Day)
+                               , "schTask" .= object [ "name" .= ("bar task" :: Text)
+                                                , "time"      .= (5 :: Int)
+                                                , "deadline"  .= (fromGregorian 2017 6 23 :: Day)
+                                                , "happy"     .= True
+                                                , "done"      .= False
+                                                , "id"        .= (1 :: Int)
+                                                ]
+                            ]
                         ]
                    ]
             assertJsonResponseIs expected
@@ -76,16 +78,18 @@ spec = withApp $ do
             get TasksR
 
             let expected = 
-                    object [ "tasks" .= [ 
-                        object [ "name" .= ("baz task" :: Text)
-                               , "time"      .= (5 :: Int)
-                               , "deadline"   .= (fromGregorian 2017 6 4 :: Day)
-                               , "happy"     .= True
-                               , "done"      .= False
-                               , "id"        .= (2 :: Int)
-                               ]
-                        ]
-                   ]
+                  object [ "tasks" .= [ 
+                    object [ "scheduledStartDate" .= (fromGregorian 2017 05 30 :: Day)
+                            , "schTask" .= object [ "name" .= ("baz task" :: Text)
+                                , "time"      .= (5 :: Int)
+                                , "deadline"   .= (fromGregorian 2017 6 4 :: Day)
+                                , "happy"     .= True
+                                , "done"      .= False
+                                , "id"        .= (2 :: Int)
+                                ]
+                            ]
+                    ]
+                  ]
             assertJsonResponseIs expected
 
     describe "postTasksR" $

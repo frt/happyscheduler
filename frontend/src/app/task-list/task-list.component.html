@@ -6,6 +6,7 @@
             <thead class="table table-header">
                 <tr>
                     <th></th>
+                    <th class="text-center text-nowrap">start</th>
                     <th class="text-center text-nowrap">deadline</th>
                     <th colspan="2"></th>
                 </tr>
@@ -13,28 +14,31 @@
             <tbody>
                 <tr *ngFor="let task of tasks" class="task-item">
                     <td>
-                    {{ task.name }}
+                    {{ task.schTask.name }}
                     </td>
                     <td class="text-center text-nowrap">
-                        {{ task.deadline }}
+                        {{ task.scheduledStartDate }}
+                    </td>
+                    <td class="text-center text-nowrap">
+                        {{ task.schTask.deadline }}
                     </td>
                     <td>
                         <span
-                            [ngClass]="{'icon-happy' : task.happy, 'icon-sad' : !task.happy}">
+                            [ngClass]="{'icon-happy' : task.schTask.happy, 'icon-sad' : !task.schTask.happy}">
                         </span>
                     </td>
                     <td class="text-nowrap pull-right">  
-                        <button id="done-task-{{task.id}}"
+                        <button id="done-task-{{task.schTask.id}}"
                                 class="btn btn-default btn-xs"
                                 aria-label="mark task as done"
-                                (click)="onDoneClick(task.id)">
+                                (click)="onDoneClick(task.schTask.id)">
                             <span class="glyphicon glyphicon-ok" 
                                   aria-hidden="true"></span>
                         </button>
-                        <button id="delete-task-{{task.id}}" 
+                        <button id="delete-task-{{task.schTask.id}}" 
                                 class="btn btn-default btn-xs"
                                 aria-label="delete task"
-                                (click)="onDeleteClick(task.id)">
+                                (click)="onDeleteClick(task.schTask.id)">
                             <span class="glyphicon glyphicon-remove" 
                                   aria-hidden="true"></span>
                         </button>

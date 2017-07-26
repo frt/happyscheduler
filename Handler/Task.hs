@@ -1,7 +1,7 @@
 module Handler.Task where
 
 import Import
-import HappyScheduler (scheduleTasks)
+import HappyScheduler
 
 getTasksR :: Handler Value
 getTasksR = do

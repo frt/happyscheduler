@@ -36,21 +36,29 @@ describe('TaskListComponent', () => {
 
         component = fixture.componentInstance;
         // tasks array example:
-        component.tasks = [{
-            time: 30,
-            deadline: '2017-08-01',
-            done: false,
-            name: 'test remove',
-            id: 1,
-            happy: true
-        }, {
-            time: 31,
-            deadline: '2017-08-03',
-            done: false,
-            name: 'test done',
-            id: 2,
-            happy: true
-        }];
+        component.tasks = [
+            {
+                scheduledStartDate: '2017-07-02',
+                schTask: {
+                    time: 30,
+                    deadline: '2017-08-01',
+                    done: false,
+                    name: 'test remove',
+                    id: 1,
+                    happy: true
+                }
+            },
+            {
+                scheduledStartDate: '2017-08-02',
+                schTask: {
+                    time: 31,
+                    deadline: '2017-08-03',
+                    done: false,
+                    name: 'test done',
+                    id: 2,
+                    happy: true
+                }
+            }];
         initialNrOfTasks = component.tasks.length;
     }));
 
@@ -68,13 +76,23 @@ describe('TaskListComponent', () => {
             .toBeGreaterThan(0);
     }));
 
-    it('should have a deadline column', async(() => {
+    it('should have a startDate column', async(() => {
         // second column header
         expect(el.querySelector('table.table thead tr th:nth-child(2)').textContent)
-            .toEqual('deadline');
+            .toEqual('start');
 
         // first line, second column
         expect(el.querySelector('table.table tbody tr td:nth-child(2)').textContent)
+            .toContain('2017-07-02');
+    }));
+
+    it('should have a deadline column', async(() => {
+        // third column header
+        expect(el.querySelector('table.table thead tr th:nth-child(3)').textContent)
+            .toEqual('deadline');
+
+        // first line, third column
+        expect(el.querySelector('table.table tbody tr td:nth-child(3)').textContent)
             .toContain('2017-08-01');
     }));
 

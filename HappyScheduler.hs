@@ -1,5 +1,7 @@
+{-# LANGUAGE DeriveGeneric #-}
 module HappyScheduler 
     ( scheduleTasks
+    , ScheduledTask(..)
     ) 
 where
 
@@ -7,6 +9,9 @@ import Prelude
 import Data.List (sort)
 import Data.Ord (Ord)
 import Database.Persist (Entity(..))
+import Data.Time.Calendar (Day, addDays)
+import Data.Aeson (ToJSON)
+import GHC.Generics
 
 import Model
 
@@ -18,5 +23,17 @@ instance Ord MyTask where
         | (not . taskHappy) t1 && taskHappy t2 = GT
         | otherwise = EQ
 
-scheduleTasks :: [Entity Task] -> [Entity Task]
-scheduleTasks = map (\(MyTask t) -> t) . sort . map MyTask
+data ScheduledTask = ScheduledTask { scheduledStartDate :: Day
+                                   , schTask :: Entity Task
+                                   }
+    deriving (Show, Eq, Generic)
+
+instance ToJSON ScheduledTask
+
+scheduleTask :: Entity Task -> ScheduledTask
+scheduleTask task@(Entity _ t) = ScheduledTask 
+                                    (addDays (- (fromIntegral $ taskTime t)) (taskDeadline t)) 
+                                    task
+
+scheduleTasks :: [Entity Task] -> [ScheduledTask]
+scheduleTasks = map (\(MyTask t) -> scheduleTask t) . sort . map MyTask
