@@ -17,7 +17,7 @@ export class NewTaskComponent implements OnInit {
         this.newTaskForm = new FormGroup({
             name: new FormControl('', Validators.required),
             happy: new FormControl('true'),
-            dueDate: new FormControl('', Validators.compose([
+            deadline: new FormControl('', Validators.compose([
                 Validators.required,
                 Validators.pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
             ])),
