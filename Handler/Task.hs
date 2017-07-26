@@ -1,12 +1,18 @@
 module Handler.Task where
 
 import Import
+--import HappyScheduler (scheduleTasks)
 
 getTasksR :: Handler Value
 getTasksR = do
     uid <- requireAuthId
     userTasks <- runDB $ selectList [UserTaskUserId ==. uid] [] :: Handler [Entity UserTask]
-    tasks <- runDB $ selectList [TaskDone ==. False, TaskId <-. map (\(Entity _ userTask) -> userTaskTaskId userTask) userTasks] [] :: Handler [Entity Task]
+    tasks <- runDB $ selectList 
+        [ TaskDone ==. False
+        , TaskId <-. map (\(Entity _ userTask) -> userTaskTaskId userTask) userTasks] 
+        [] :: Handler [Entity Task]
+
+    --return $ object ["tasks" .= scheduleTasks tasks]
     return $ object ["tasks" .= tasks]
 
 postTasksR :: Handler ()

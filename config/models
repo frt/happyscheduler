@@ -13,7 +13,7 @@ Email
 Task json
     name Text
     time Int
-    dueDate Day
+    deadline Day
     happy Bool
     done Bool
     deriving Eq Show

@@ -9,10 +9,10 @@ import Network.Wai.Test (SResponse (..))
 import Data.Aeson.Types (FromJSON)
 
 sendTaskRequest :: Text -> Int -> Day -> Bool -> Bool -> YesodExample App ()
-sendTaskRequest name time dueDate happy done = do
+sendTaskRequest name time deadline happy done = do
     let body = object [ "name"      .= (name :: Text)
                       , "time"      .= (time :: Int)
-                      , "dueDate"   .= (dueDate :: Day)
+                      , "deadline"   .= (deadline :: Day)
                       , "happy"     .= (happy :: Bool)
                       , "done"      .= (done :: Bool)
                       ]
@@ -58,7 +58,7 @@ spec = withApp $ do
                     object [ "tasks" .= [ 
                         object [ "name" .= ("bar task" :: Text)
                                , "time"      .= (5 :: Int)
-                               , "dueDate"   .= (fromGregorian 2017 6 23 :: Day)
+                               , "deadline"   .= (fromGregorian 2017 6 23 :: Day)
                                , "happy"     .= True
                                , "done"      .= False
                                , "id"        .= (1 :: Int)
@@ -79,7 +79,7 @@ spec = withApp $ do
                     object [ "tasks" .= [ 
                         object [ "name" .= ("baz task" :: Text)
                                , "time"      .= (5 :: Int)
-                               , "dueDate"   .= (fromGregorian 2017 6 4 :: Day)
+                               , "deadline"   .= (fromGregorian 2017 6 4 :: Day)
                                , "happy"     .= True
                                , "done"      .= False
                                , "id"        .= (2 :: Int)
@@ -93,19 +93,19 @@ spec = withApp $ do
         it "inserts a task to the user foo" $ do
             let name = "foo task" :: Text
                 time = 3 :: Int
-                dueDate = fromGregorian 2017 06 4 :: Day
+                deadline = fromGregorian 2017 06 4 :: Day
                 happy = True
                 done = False
         
             userBar <- createUser "foo"
             authenticateAs userBar
-            sendTaskRequest name time dueDate happy done
+            sendTaskRequest name time deadline happy done
 
             statusIs 201
             [Entity _ task] <- runDB $ selectList [TaskName ==. name] []
             assertEq "Should have " task  Task { taskName = name
                                                , taskTime = time
-                                               , taskDueDate = dueDate
+                                               , taskDeadline = deadline
                                                , taskHappy = happy
                                                , taskDone = done
                                                }
@@ -124,7 +124,7 @@ spec = withApp $ do
                     object [ "task" .=
                         object [ "name" .= ("foobar task" :: Text)
                                , "time"      .= (7 :: Int)
-                               , "dueDate"   .= (fromGregorian 2017 6 5 :: Day)
+                               , "deadline"   .= (fromGregorian 2017 6 5 :: Day)
                                , "happy"     .= False
                                , "done"      .= True
                                , "id"        .= (1 :: Int)
@@ -145,12 +145,12 @@ spec = withApp $ do
             authenticateAs user
             let name    = "bar task" :: Text
                 time    = 5 :: Int
-                dueDate = fromGregorian 2017 06 8 :: Day
+                deadline = fromGregorian 2017 06 8 :: Day
                 happy   = True :: Bool
                 done    = False :: Bool
                 body = object [ "name"      .= name
                               , "time"      .= time
-                              , "dueDate"   .= dueDate
+                              , "deadline"   .= deadline
                               , "happy"     .= happy
                               , "done"      .= done
                               ]
@@ -165,7 +165,7 @@ spec = withApp $ do
             task <- runDB $ getJust (toSqlKey 7)
             assertEq "Should have the task " task  Task { taskName = name
                                                , taskTime = time
-                                               , taskDueDate = dueDate
+                                               , taskDeadline = deadline
                                                , taskHappy = happy
                                                , taskDone = done
                                                }
