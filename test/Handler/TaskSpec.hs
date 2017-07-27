@@ -56,13 +56,13 @@ spec = withApp $ do
 
             let expected = 
                     object [ "tasks" .= [ 
-                        object [ "scheduledStartDate" .= (fromGregorian 2017 06 18 :: Day)
-                               , "schTask" .= object [ "name" .= ("bar task" :: Text)
+                        object [ "taskId" .= (1 :: Integer)
+                               , "taskStartDate" .= (fromGregorian 2017 06 18 :: Day)
+                               , "taskFromModel" .= object [ "name" .= ("bar task" :: Text)
                                                 , "time"      .= (5 :: Int)
                                                 , "deadline"  .= (fromGregorian 2017 6 23 :: Day)
                                                 , "happy"     .= True
                                                 , "done"      .= False
-                                                , "id"        .= (1 :: Int)
                                                 ]
                             ]
                         ]
@@ -79,13 +79,13 @@ spec = withApp $ do
 
             let expected = 
                   object [ "tasks" .= [ 
-                    object [ "scheduledStartDate" .= (fromGregorian 2017 05 30 :: Day)
-                            , "schTask" .= object [ "name" .= ("baz task" :: Text)
+                    object [ "taskId" .= (2 :: Int)
+                           , "taskStartDate" .= (fromGregorian 2017 05 30 :: Day)
+                            , "taskFromModel" .= object [ "name" .= ("baz task" :: Text)
                                 , "time"      .= (5 :: Int)
                                 , "deadline"   .= (fromGregorian 2017 6 4 :: Day)
                                 , "happy"     .= True
                                 , "done"      .= False
-                                , "id"        .= (2 :: Int)
                                 ]
                             ]
                     ]

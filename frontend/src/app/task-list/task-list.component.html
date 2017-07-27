@@ -14,31 +14,31 @@
             <tbody>
                 <tr *ngFor="let task of tasks" class="task-item">
                     <td>
-                    {{ task.schTask.name }}
+                    {{ task.taskFromModel.name }}
                     </td>
                     <td class="text-center text-nowrap">
-                        {{ task.scheduledStartDate }}
+                        {{ task.taskStartDate }}
                     </td>
                     <td class="text-center text-nowrap">
-                        {{ task.schTask.deadline }}
+                        {{ task.taskFromModel.deadline }}
                     </td>
                     <td>
                         <span
-                            [ngClass]="{'icon-happy' : task.schTask.happy, 'icon-sad' : !task.schTask.happy}">
+                            [ngClass]="{'icon-happy' : task.taskFromModel.happy, 'icon-sad' : !task.taskFromModel.happy}">
                         </span>
                     </td>
                     <td class="text-nowrap pull-right">  
-                        <button id="done-task-{{task.schTask.id}}"
+                        <button id="done-task-{{task.taskId}}"
                                 class="btn btn-default btn-xs"
                                 aria-label="mark task as done"
-                                (click)="onDoneClick(task.schTask.id)">
+                                (click)="onDoneClick(task.taskId)">
                             <span class="glyphicon glyphicon-ok" 
                                   aria-hidden="true"></span>
                         </button>
-                        <button id="delete-task-{{task.schTask.id}}" 
+                        <button id="delete-task-{{task.taskId}}" 
                                 class="btn btn-default btn-xs"
                                 aria-label="delete task"
-                                (click)="onDeleteClick(task.schTask.id)">
+                                (click)="onDeleteClick(task.taskId)">
                             <span class="glyphicon glyphicon-remove" 
                                   aria-hidden="true"></span>
                         </button>

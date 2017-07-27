@@ -1,7 +1,16 @@
 module Handler.Task where
 
 import Import
-import HappyScheduler
+import Database.Persist.Sql (fromSqlKey)
+
+import Model
+import qualified HappyScheduler
+
+taskFromEntity :: Entity Model.Task -> HappyScheduler.Task
+taskFromEntity (Entity k v) = HappyScheduler.Task { taskId = fromIntegral (fromSqlKey k)
+                                                   , taskStartDate = ModifiedJulianDay 0
+                                                   , taskFromModel = v
+                                                   }
 
 getTasksR :: Handler Value
 getTasksR = do
@@ -12,7 +21,7 @@ getTasksR = do
         , TaskId <-. map (\(Entity _ userTask) -> userTaskTaskId userTask) userTasks] 
         [] :: Handler [Entity Task]
 
-    return $ object ["tasks" .= scheduleTasks tasks]
+    return $ object ["tasks" .= (HappyScheduler.scheduleTasks . map taskFromEntity) tasks]
 
 postTasksR :: Handler ()
 postTasksR = do

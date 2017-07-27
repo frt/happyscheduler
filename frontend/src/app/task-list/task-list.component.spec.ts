@@ -38,24 +38,24 @@ describe('TaskListComponent', () => {
         // tasks array example:
         component.tasks = [
             {
-                scheduledStartDate: '2017-07-02',
-                schTask: {
+                taskId: 1,
+                taskStartDate: '2017-07-02',
+                taskFromModel: {
                     time: 30,
                     deadline: '2017-08-01',
                     done: false,
                     name: 'test remove',
-                    id: 1,
                     happy: true
                 }
             },
             {
-                scheduledStartDate: '2017-08-02',
-                schTask: {
+                taskId: 2,
+                taskStartDate: '2017-08-02',
+                taskFromModel: {
                     time: 31,
                     deadline: '2017-08-03',
                     done: false,
                     name: 'test done',
-                    id: 2,
                     happy: true
                 }
             }];
@@ -122,7 +122,7 @@ describe('TaskListComponent', () => {
         fixture.detectChanges();
 
         expect(http.put).toHaveBeenCalledWith('../tasks/2',
-            '{"time":31,"deadline":"2017-08-03","done":true,"name":"test done","id":2,"happy":true}');
+            '{"time":31,"deadline":"2017-08-03","done":true,"name":"test done","happy":true}');
         expect(el.querySelectorAll('.task-item').length)
             .toEqual(initialNrOfTasks - 1);    // will take the task
                                               // out of the list

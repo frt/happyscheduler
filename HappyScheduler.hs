@@ -1,39 +1,38 @@
 {-# LANGUAGE DeriveGeneric #-}
 module HappyScheduler 
     ( scheduleTasks
-    , ScheduledTask(..)
+    , Task(..)
     ) 
 where
 
 import Prelude
 import Data.List (sort)
 import Data.Ord (Ord)
-import Database.Persist (Entity(..))
 import Data.Time.Calendar (Day, addDays)
 import Data.Aeson (ToJSON)
 import GHC.Generics
 
-import Model
+-- lets use the model from the application
+import qualified Model
 
-newtype MyTask = MyTask (Entity Task) deriving Eq
-
-instance Ord MyTask where
-    compare (MyTask (Entity _ t1)) (MyTask (Entity _ t2))
-        | taskHappy t1 && (not . taskHappy) t2 = LT
-        | (not . taskHappy) t1 && taskHappy t2 = GT
+instance Ord Task where
+    compare t1 t2
+        | isHappy t1 && (not . isHappy) t2 = LT
+        | (not . isHappy) t1 && isHappy t2 = GT
         | otherwise = EQ
+            where isHappy = Model.taskHappy . taskFromModel
 
-data ScheduledTask = ScheduledTask { scheduledStartDate :: Day
-                                   , schTask :: Entity Task
-                                   }
-    deriving (Show, Eq, Generic)
+data Task = Task { taskId :: Integer
+                 , taskStartDate :: Day
+                 , taskFromModel :: Model.Task
+                 } deriving (Show, Eq, Generic)
 
-instance ToJSON ScheduledTask
+instance ToJSON Task
 
-scheduleTask :: Entity Task -> ScheduledTask
-scheduleTask task@(Entity _ t) = ScheduledTask 
-                                    (addDays (- (fromIntegral $ taskTime t)) (taskDeadline t)) 
-                                    task
+scheduleTask :: Task -> Task
+scheduleTask task = task { taskStartDate = addDays (-taskTime) taskDeadline }
+    where taskTime = fromIntegral $ (Model.taskTime . taskFromModel) task
+          taskDeadline = (Model.taskDeadline . taskFromModel) task
 
-scheduleTasks :: [Entity Task] -> [ScheduledTask]
-scheduleTasks = map (\(MyTask t) -> scheduleTask t) . sort . map MyTask
+scheduleTasks :: [Task] -> [Task]
+scheduleTasks = map scheduleTask . sort
