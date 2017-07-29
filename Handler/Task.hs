@@ -21,7 +21,9 @@ getTasksR = do
         , TaskId <-. map (\(Entity _ userTask) -> userTaskTaskId userTask) userTasks] 
         [] :: Handler [Entity Task]
 
-    return $ object ["tasks" .= (HappyScheduler.scheduleTasks . map taskFromEntity) tasks]
+    today <- liftIO $! fmap utctDay getCurrentTime
+
+    return $ object ["tasks" .= (HappyScheduler.scheduleTasks today . map taskFromEntity) tasks]
 
 postTasksR :: Handler ()
 postTasksR = do

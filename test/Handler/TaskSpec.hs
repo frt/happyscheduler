@@ -2,11 +2,11 @@ module Handler.TaskSpec (spec) where
 
 import TestImport
 import Data.Aeson (object, encode, decode, (.=))
---import qualified Database.Persist as DB (get)
 import Database.Persist.Sql (toSqlKey)
 import Data.Maybe
 import Network.Wai.Test (SResponse (..))
 import Data.Aeson.Types (FromJSON)
+import Data.Time.Clock (getCurrentTime, utctDay)
 
 sendTaskRequest :: Text -> Int -> Day -> Bool -> Bool -> YesodExample App ()
 sendTaskRequest name time deadline happy done = do
@@ -54,10 +54,11 @@ spec = withApp $ do
             authenticateAs userBar
             get TasksR
 
+            today <- liftIO $ fmap utctDay getCurrentTime
             let expected = 
                     object [ "tasks" .= [ 
                         object [ "taskId" .= (1 :: Integer)
-                               , "taskStartDate" .= (fromGregorian 2017 06 18 :: Day)
+                               , "taskStartDate" .= today
                                , "taskFromModel" .= object [ "name" .= ("bar task" :: Text)
                                                 , "time"      .= (5 :: Int)
                                                 , "deadline"  .= (fromGregorian 2017 6 23 :: Day)
@@ -77,13 +78,14 @@ spec = withApp $ do
 
             get TasksR
 
+            today <- liftIO $ fmap utctDay getCurrentTime
             let expected = 
                   object [ "tasks" .= [ 
                     object [ "taskId" .= (2 :: Int)
-                           , "taskStartDate" .= (fromGregorian 2017 05 30 :: Day)
+                           , "taskStartDate"  .= today
                             , "taskFromModel" .= object [ "name" .= ("baz task" :: Text)
                                 , "time"      .= (5 :: Int)
-                                , "deadline"   .= (fromGregorian 2017 6 4 :: Day)
+                                , "deadline"  .= (fromGregorian 2017 6 4 :: Day)
                                 , "happy"     .= True
                                 , "done"      .= False
                                 ]
