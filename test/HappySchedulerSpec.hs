@@ -89,3 +89,21 @@ spec =
 
                 taskStartDate st1 `shouldBe` fromGregorian 2017 8 27
                 taskStartDate st2 `shouldBe` fromGregorian 2017 8 29
+
+        context "when happy and sad tasks schedule superpose" $
+            it "should change the sad task to start after the happy task" $ do
+                let t1 = aTask { taskFromModel = modelTask { 
+                        Model.taskHappy = True,
+                        Model.taskTime = 7,
+                        Model.taskDeadline = fromGregorian 2017 8 31 } 
+                    }
+                    t2 = aTask { taskFromModel = modelTask {
+                        Model.taskHappy = False,
+                        Model.taskTime = 7,
+                        Model.taskDeadline = fromGregorian 2017 8 31 } 
+                    }
+                    [st1, st2] = scheduleTasks (fromGregorian 2017 8 20) [t1, t2]
+
+                taskStartDate st1 `shouldBe` fromGregorian 2017 8 20
+                taskStartDate st2 `shouldBe` fromGregorian 2017 8 27
+
