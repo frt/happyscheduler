@@ -7,6 +7,7 @@ import Data.Time.Clock (getCurrentTime, utctDay)
 import qualified Model
 import HappyScheduler
 
+modelTask :: Model.Task
 modelTask = Model.Task { taskName = "a task"
                        , taskDone = False
                        , taskDeadline = ModifiedJulianDay 0
@@ -38,17 +39,17 @@ spec =
                 today' <- today
                 scheduleTasks today' [] `shouldBe` ([] :: [Task])
 
-        it "should put happy tasks first" $ do
-            today' <- today
-            scheduleTasks today' [sadTask, happyTask] 
-                `shouldBe` [happyTask {taskStartDate = today'}, sadTask]
+        it "if everything equal,should put happy tasks first" $ do
+            let [st1, st2] = scheduleTasks (fromGregorian 2017 7 29) [sadTask, happyTask] 
+            isHappy st1 `shouldBe` True
+            isHappy st2 `shouldBe` False
 
         it "should give a 'start date'" $ do
             today' <- today
             let [schTask] = scheduleTasks today' [sadTask { 
                         taskFromModel = (taskFromModel sadTask) { Model.taskTime = 1 }
                     }]
-            taskStartDate schTask `shouldBe` ModifiedJulianDay (-1)
+            taskStartDate schTask `shouldBe` today'
 
         it "should start happy tasks as early as possible" $ do
             today' <- today
@@ -85,9 +86,9 @@ spec =
                         Model.taskTime = 3,
                         Model.taskDeadline = fromGregorian 2017 9 1 } 
                     }
-                    [st1, st2] = scheduleTasks (fromGregorian 2017 7 28) [t1, t2]
+                    [st1, st2] = scheduleTasks (fromGregorian 2017 7 26) [t1, t2]
 
-                taskStartDate st1 `shouldBe` fromGregorian 2017 8 27
+                taskStartDate st1 `shouldBe` fromGregorian 2017 8 26
                 taskStartDate st2 `shouldBe` fromGregorian 2017 8 29
 
         context "when happy and sad tasks schedule superpose" $
@@ -107,3 +108,23 @@ spec =
                 taskStartDate st1 `shouldBe` fromGregorian 2017 8 20
                 taskStartDate st2 `shouldBe` fromGregorian 2017 8 27
 
+        it "should sort properly" $ do
+            let t1 = aTask { taskId = 1, taskFromModel = modelTask { 
+                    Model.taskHappy = True,
+                    Model.taskTime = 3,
+                    Model.taskDeadline = fromGregorian 2017 8 13 } 
+                }
+                t2 = aTask { taskId = 2, taskFromModel = modelTask {
+                    Model.taskHappy = True,
+                    Model.taskTime = 5,
+                    Model.taskDeadline = fromGregorian 2017 8 13 } 
+                }
+                t3 = aTask { taskId = 3, taskFromModel = modelTask {
+                    Model.taskHappy = False,
+                    Model.taskTime = 2,
+                    Model.taskDeadline = fromGregorian 2017 8 7 } 
+                }
+                [st1, st2, st3] = scheduleTasks (fromGregorian 2017 8 1) [t1, t2, t3]
+            st1 `shouldBe` t1 {taskStartDate = fromGregorian 2017 8 1}
+            st2 `shouldBe` t3 {taskStartDate = fromGregorian 2017 8 5}
+            st3 `shouldBe` t2 {taskStartDate = fromGregorian 2017 8 7}
