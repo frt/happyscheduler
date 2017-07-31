@@ -13,7 +13,7 @@ export class NewTaskComponent implements OnInit {
 
     constructor(private http: Http, private messagesService: InfoMessagesService) {}
 
-    ngOnInit() {
+    resetForm() {
         this.newTaskForm = new FormGroup({
             name: new FormControl('', Validators.required),
             happy: new FormControl('true'),
@@ -28,13 +28,17 @@ export class NewTaskComponent implements OnInit {
         });
     }
 
+    ngOnInit() {
+        this.resetForm();
+    }
+
     onSubmit = function(newTask) {
         newTask.done = false;
         newTask.happy = newTask.happy === 'true';
         newTask.time = Number(newTask.time);
         this.http.post('../tasks', newTask).subscribe(
             (data) => {
-                this.newTaskForm.reset();
+                this.resetForm();
                 this.messagesService.infoMessage = 'new task created! ' + newTask.name;
             },
             error => alert('An error occurred: ' + error)
