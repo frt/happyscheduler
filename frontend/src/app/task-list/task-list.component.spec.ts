@@ -10,6 +10,10 @@ import 'rxjs/add/observable/of';
 import { ComponentFixtureAutoDetect } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
+// new-task stuff
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { NewTaskComponent } from '../new-task/new-task.component';
+
 import { TaskListComponent } from './task-list.component';
 
 describe('TaskListComponent', () => {
@@ -20,15 +24,19 @@ describe('TaskListComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                TaskListComponent
-            ],
             imports: [
+                ReactiveFormsModule,
+                FormsModule,
                 RouterTestingModule,
                 HttpModule
             ],
+            declarations: [
+                NewTaskComponent,
+                TaskListComponent
+            ],
             providers: [
-                { provide: ComponentFixtureAutoDetect, useValue: true }
+                { provide: ComponentFixtureAutoDetect, useValue: true },
+                InfoMessagesService
             ]
         }).compileComponents();
         fixture = TestBed.createComponent(TaskListComponent);
@@ -60,10 +68,6 @@ describe('TaskListComponent', () => {
                 }
             }];
         initialNrOfTasks = component.tasks.length;
-    }));
-
-    it('should not have an <hr> element',  async(() => {
-        expect(el.querySelectorAll('hr').length).toEqual(0);
     }));
 
     it('should have a delete button', async(() => {

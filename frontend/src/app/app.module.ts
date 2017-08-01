@@ -25,10 +25,6 @@ import { InfoMessagesService } from './info-messages.service';
                 component: TaskListComponent
             },
             {
-                path: 'new-task',
-                component: NewTaskComponent
-            },
-            {
                 path: '',
                 redirectTo: '/task-list',
                 pathMatch: 'full'

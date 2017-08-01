@@ -49,9 +49,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <button type="button" class="btn btn-primary" routerLink="/new-task">
-                New Task
-            </button>
+            <app-new-task (onNewTask)="fetchTasks()"></app-new-task>
         </div>
     </div>
 </div>
