@@ -28,7 +28,7 @@ export class TaskListComponent implements OnInit {
 
     onDeleteClick(id: number) {
         this.http.delete('../tasks/' + id).subscribe(
-            () => this.removeTaskFromView(id),
+            () => this.fetchTasks(),
             error => alert('An error occurred: ' + error)
         );
     }
@@ -37,7 +37,7 @@ export class TaskListComponent implements OnInit {
         const taskToUpdate = this.tasks.find((task) => { return task.taskId === id; });
         taskToUpdate.taskFromModel.done = true;
         this.http.put('../tasks/' + id, JSON.stringify(taskToUpdate.taskFromModel)).subscribe(
-            () => this.removeTaskFromView(id),
+            () => this.fetchTasks(),
             error => alert('An error occurred: ' + error)
         );
     }

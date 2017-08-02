@@ -103,6 +103,13 @@ describe('TaskListComponent', () => {
     it('should delete a task when delete button is clicked', async(() => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'delete').and.returnValue(Observable.of('DELETED'));
+        spyOn(http, 'get').and.callFake(function() {
+            if (http.get.calls.count() == 0) {
+                    return Observable.of(JSON.stringify(component.tasks));
+            } else if (http.get.calls.count() == 1) {
+                    return Observable.of(JSON.stringify(component.tasks.splice(0, 1)));
+            }
+        });
 
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
 
@@ -112,12 +119,20 @@ describe('TaskListComponent', () => {
         fixture.detectChanges();
 
         expect(http.delete).toHaveBeenCalledWith('../tasks/1');
+        expect(http.get).toHaveBeenCalledWith('../tasks');
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks - 1);
     }));
 
     it('should mark a task as done when done button is clicked', async(() => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'put').and.returnValue(Observable.of('UPDATED'));
+        spyOn(http, 'get').and.callFake(function() {
+            if (http.get.calls.count() == 0) {
+                    return Observable.of(JSON.stringify(component.tasks));
+            } else if (http.get.calls.count() == 1) {
+                    return Observable.of(JSON.stringify(component.tasks.splice(0, 1)));
+            }
+        });
 
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
 
@@ -127,6 +142,7 @@ describe('TaskListComponent', () => {
 
         expect(http.put).toHaveBeenCalledWith('../tasks/2',
             '{"time":31,"deadline":"2017-08-03","done":true,"name":"test done","happy":true}');
+        expect(http.get).toHaveBeenCalledWith('../tasks');
         expect(el.querySelectorAll('.task-item').length)
             .toEqual(initialNrOfTasks - 1);    // will take the task
                                               // out of the list
