@@ -134,11 +134,9 @@ instance Yesod App where
     -- The page to be redirected to when authentication is required.
     authRoute _ = Just $ AuthR LoginR
 
-    -- TODO: real authorization
     isAuthorized ProfileR _ = isAuthenticated
     isAuthorized TasksR _ = isAuthenticated
     isAuthorized (TaskR _) _ = isAuthenticated
-    isAuthorized (FrontendR _) _ = isAuthenticated
     isAuthorized _ _ = return Authorized
 
     -- This function creates static content files in the static folder
