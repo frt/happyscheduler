@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
 import { InfoMessagesService } from '../info-messages.service';
@@ -19,7 +19,7 @@ export class NewTaskComponent implements OnInit {
         this.newTaskForm = new FormGroup({
             name: new FormControl('', Validators.required),
             happy: new FormControl('true', Validators.required),
-            deadline: new FormControl('2038-01-20', Validators.compose([
+            deadline: new FormControl('', Validators.compose([
                 Validators.required,
                 Validators.pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
             ])),
@@ -28,6 +28,22 @@ export class NewTaskComponent implements OnInit {
                 Validators.pattern('[0-9]+')
             ]))
         });
+    }
+
+    @ViewChild('dl')
+    private input: ElementRef;
+
+    @HostListener('change')
+    private missingInputWorkaround() {
+        const formCtrl = this.newTaskForm.get('deadline');
+	if (this.isBrowserWithoutInputEvent() && this.input.nativeElement.value !== formCtrl.value) {
+	    formCtrl.setValue(this.input.nativeElement.value);
+        }
+    }
+
+    private isBrowserWithoutInputEvent() {
+	// Firefox for Android (Fennec)
+	return /\(Android .+ Firefox\/\d+/i.test(navigator.userAgent);
     }
 
     onSubmit = function(newTask) {
