@@ -33,10 +33,11 @@
 <footer .footer>
     <hr>
     <div .container>
-        <a href="http://bitcoin.org" target="_NEW">
-            BitCoin:
+        <p>
+            Donate:<br>
+            <a href="http://bitcoin.org" target="_NEW">
+                BitCoin:
             <a href="bitcoin:16Ar8BCE64cugudXyZbAuX6GptEDhUNW9X">
                 <b>16Ar8BCE64cugudXyZbAuX6GptEDhUNW9X
-        <br>
         <p .text-muted>
             #{appCopyright $ appSettings master}
