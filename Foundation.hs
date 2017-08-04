@@ -66,7 +66,7 @@ instance Yesod App where
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
     makeSessionBackend _ = Just <$> defaultClientSessionBackend
-        240    -- timeout in minutes
+        (60 * 24 * 14)    -- timeout in minutes: two weeks
         "config/client_session_key.aes"
 
     -- Yesod Middleware allows you to run code before and after each handler function.
