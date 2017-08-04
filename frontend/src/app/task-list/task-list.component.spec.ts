@@ -104,9 +104,9 @@ describe('TaskListComponent', () => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'delete').and.returnValue(Observable.of('DELETED'));
         spyOn(http, 'get').and.callFake(function() {
-            if (http.get.calls.count() == 0) {
+            if (http.get.calls.count() === 0) {
                     return Observable.of(JSON.stringify(component.tasks));
-            } else if (http.get.calls.count() == 1) {
+            } else if (http.get.calls.count() === 1) {
                     return Observable.of(JSON.stringify(component.tasks.splice(0, 1)));
             }
         });
@@ -127,9 +127,9 @@ describe('TaskListComponent', () => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'put').and.returnValue(Observable.of('UPDATED'));
         spyOn(http, 'get').and.callFake(function() {
-            if (http.get.calls.count() == 0) {
+            if (http.get.calls.count() === 0) {
                     return Observable.of(JSON.stringify(component.tasks));
-            } else if (http.get.calls.count() == 1) {
+            } else if (http.get.calls.count() === 1) {
                     return Observable.of(JSON.stringify(component.tasks.splice(0, 1)));
             }
         });

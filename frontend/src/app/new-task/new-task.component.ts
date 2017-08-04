@@ -10,8 +10,10 @@ import { InfoMessagesService } from '../info-messages.service';
 })
 export class NewTaskComponent implements OnInit {
     @Output() onNewTask = new EventEmitter();
-
     newTaskForm;
+
+    @ViewChild('dl')
+    private input: ElementRef;
 
     constructor(private http: Http, private messagesService: InfoMessagesService) {}
 
@@ -30,20 +32,17 @@ export class NewTaskComponent implements OnInit {
         });
     }
 
-    @ViewChild('dl')
-    private input: ElementRef;
-
     @HostListener('change')
     private missingInputWorkaround() {
         const formCtrl = this.newTaskForm.get('deadline');
-	if (this.isBrowserWithoutInputEvent() && this.input.nativeElement.value !== formCtrl.value) {
-	    formCtrl.setValue(this.input.nativeElement.value);
+        if (this.isBrowserWithoutInputEvent() && this.input.nativeElement.value !== formCtrl.value) {
+            formCtrl.setValue(this.input.nativeElement.value);
         }
     }
 
     private isBrowserWithoutInputEvent() {
 	// Firefox for Android (Fennec)
-	return /\(Android .+ Firefox\/\d+/i.test(navigator.userAgent);
+        return /\(Android .+ Firefox\/\d+/i.test(navigator.userAgent);
     }
 
     onSubmit = function(newTask) {
