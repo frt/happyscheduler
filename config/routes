@@ -6,8 +6,6 @@
 
 / HomeR GET
 
-/profile ProfileR GET
-
 /tasks TasksR POST GET
 /tasks/#TaskId TaskR GET PUT DELETE
 /frontend/*[Text] FrontendR GET

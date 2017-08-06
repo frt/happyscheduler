@@ -32,7 +32,6 @@ library
                      Settings.StaticFiles
                      Handler.Common
                      Handler.Home
-                     Handler.Profile
                      Handler.Task
                      Handler.Frontend
                      HappyScheduler
@@ -140,7 +139,6 @@ test-suite test
     other-modules:     TestImport
                        Handler.CommonSpec
                        Handler.HomeSpec
-                       Handler.ProfileSpec
                        Handler.TaskSpec
                        Handler.FrontendSpec
                        HappySchedulerSpec

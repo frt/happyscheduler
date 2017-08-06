@@ -93,11 +93,6 @@ instance Yesod App where
                     , menuItemAccessCallback = True
                     }
                 , NavbarLeft MenuItem
-                    { menuItemLabel = "Profile"
-                    , menuItemRoute = ProfileR
-                    , menuItemAccessCallback = isJust muser
-                    }
-                , NavbarLeft MenuItem
                     { menuItemLabel = "My Tasks"
                     , menuItemRoute = FrontendR []
                     , menuItemAccessCallback = isJust muser
@@ -134,7 +129,6 @@ instance Yesod App where
     -- The page to be redirected to when authentication is required.
     authRoute _ = Just $ AuthR LoginR
 
-    isAuthorized ProfileR _ = isAuthenticated
     isAuthorized TasksR _ = isAuthenticated
     isAuthorized (TaskR _) _ = isAuthenticated
     isAuthorized _ _ = return Authorized
