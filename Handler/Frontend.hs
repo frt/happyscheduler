@@ -5,7 +5,7 @@ import Import
 -- will redirect to login page if not authenticated
 getFrontendR :: [Text] -> Handler Html
 getFrontendR _ = do
-    requireAuth
+    _ <- requireAuth
     defaultLayout $ do
         setTitle "happy scheduler"
         $(widgetFile "frontend")
