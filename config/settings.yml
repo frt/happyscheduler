@@ -36,4 +36,4 @@ database:
   poolsize: "_env:SQLITE_POOLSIZE:10"
 
 copyright: copyleft
-#analytics: UA-YOURCODE
+analytics: UA-104197447-1
