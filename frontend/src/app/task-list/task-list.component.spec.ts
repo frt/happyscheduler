@@ -46,26 +46,22 @@ describe('TaskListComponent', () => {
         // tasks array example:
         component.tasks = [
             {
-                taskId: 1,
-                taskStartDate: '2017-07-02',
-                taskFromModel: {
-                    time: 30,
-                    deadline: '2017-08-01',
-                    done: false,
-                    name: 'test remove',
-                    happy: true
-                }
+                id: 1,
+                startDate: '2017-07-02',
+                time: 30,
+                deadline: '2017-08-01',
+                done: false,
+                name: 'test remove',
+                happy: true
             },
             {
-                taskId: 2,
-                taskStartDate: '2017-08-02',
-                taskFromModel: {
-                    time: 31,
-                    deadline: '2017-08-03',
-                    done: false,
-                    name: 'test done',
-                    happy: true
-                }
+                id: 2,
+                startDate: '2017-08-02',
+                time: 31,
+                deadline: '2017-08-03',
+                done: false,
+                name: 'test done',
+                happy: true
             }];
         initialNrOfTasks = component.tasks.length;
     }));
@@ -141,7 +137,7 @@ describe('TaskListComponent', () => {
         fixture.detectChanges();
 
         expect(http.put).toHaveBeenCalledWith('../tasks/2',
-            '{"time":31,"deadline":"2017-08-03","done":true,"name":"test done","happy":true}');
+            '{"id":2,"startDate":"2017-08-02","time":31,"deadline":"2017-08-03","done":true,"name":"test done","happy":true}');
         expect(http.get).toHaveBeenCalledWith('../tasks');
         expect(el.querySelectorAll('.task-item').length)
             .toEqual(initialNrOfTasks - 1);    // will take the task

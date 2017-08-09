@@ -22,10 +22,6 @@ export class TaskListComponent implements OnInit {
         );
     }
 
-    private removeTaskFromView(id: number) {
-        this.tasks = this.tasks.filter(task => task.taskId !== id);
-    }
-
     onDeleteClick(id: number) {
         this.http.delete('../tasks/' + id).subscribe(
             () => this.fetchTasks(),
@@ -34,9 +30,9 @@ export class TaskListComponent implements OnInit {
     }
 
     onDoneClick(id: number) {
-        const taskToUpdate = this.tasks.find((task) => { return task.taskId === id; });
-        taskToUpdate.taskFromModel.done = true;
-        this.http.put('../tasks/' + id, JSON.stringify(taskToUpdate.taskFromModel)).subscribe(
+        const taskToUpdate = this.tasks.find((task) => { return task.id === id; });
+        taskToUpdate.done = true;
+        this.http.put('../tasks/' + id, JSON.stringify(taskToUpdate)).subscribe(
             () => this.fetchTasks(),
             error => alert('An error occurred: ' + error)
         );

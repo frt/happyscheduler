@@ -53,7 +53,6 @@ export class NewTaskComponent implements OnInit {
             (data) => {
                 this.newTaskForm.reset();
                 this.newTaskForm.controls.happy.setValue('true');
-                this.newTaskForm.controls.deadline.setValue('2038-01-20');
                 this.messagesService.infoMessage = 'new task created! ' + newTask.name;
                 this.onNewTask.emit();
             },
