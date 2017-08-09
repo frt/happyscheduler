@@ -1,104 +1,123 @@
-{-# LANGUAGE DeriveGeneric #-}
 module HappyScheduler 
     ( scheduleTasks
-    , Task(..)
-    , isHappy
+    , Schedulable(..)
     ) 
 where
 
-import Prelude
-import Data.List (sort)
-import Data.Ord (Ord)
-import Data.Time.Calendar (Day, addDays, diffDays)
-import Data.Aeson (ToJSON)
-import GHC.Generics
+import Prelude hiding (compare)
+import Data.List (sortBy)
+import Data.Time.Calendar (Day(ModifiedJulianDay), addDays, diffDays)
+import Data.Maybe (isJust, isNothing, fromJust)
 
--- lets use the model from the application
-import qualified Model
+class Schedulable a where
+    schHappy :: a -> Bool
+    schHappy = not . schSad
 
-instance Ord Task where
-    compare t1 t2
-        | taskStartDate t1 < taskStartDate t2       = LT
-        | taskStartDate t1 > taskStartDate t2       = GT
-        | taskDeadline t1 < taskDeadline t2       = LT
-        | taskDeadline t1 > taskDeadline t2       = GT
-        | isHappy t1 && isSad t2 = LT
-        | isSad t1 && isHappy t2 = GT
-        | otherwise = EQ
+    schSad :: a -> Bool
+    schSad = not . schHappy
 
-data Task = Task { taskId :: Integer
-                 , taskStartDate :: Day
-                 , taskFromModel :: Model.Task
-                 } deriving (Show, Eq, Generic)
+    schTime :: a -> Integer
+    schDeadline :: a -> Day
+    schStartDate :: a -> Maybe Day
+    schSetStartDate :: a -> Maybe Day -> a
 
-instance ToJSON Task
-
-isHappy :: Task -> Bool
-isHappy = Model.taskHappy . taskFromModel
-
-isSad :: Task -> Bool
-isSad = not . isHappy
-
-taskTime :: Task -> Integer
-taskTime = fromIntegral . Model.taskTime . taskFromModel
-
-taskEndDate :: Task -> Day
-taskEndDate t = addDays (taskTime t) (taskStartDate t)
-
-taskDeadline :: Task -> Day
-taskDeadline = Model.taskDeadline . taskFromModel
+taskEndDate :: (Schedulable a) => a -> Maybe Day
+taskEndDate t
+    | isJust (schStartDate t) = Just $ addDays (schTime t) (fromJust $ schStartDate t)
+    | otherwise = Nothing
           
-daysBetween :: Task -> Task -> Integer
-daysBetween t1 t2 = diffDays (taskStartDate t2) (taskEndDate t1)
+daysBetween :: (Schedulable a) => a -> a -> Maybe Integer
+daysBetween t1 t2
+    | isJust (schStartDate t2) &&
+      isJust (taskEndDate t1) = 
+            Just $ diffDays (fromJust $ schStartDate t2) (fromJust $ taskEndDate t1)
+    | otherwise = Nothing
 
 -- Get the first free day wich have size consecutive days available
 -- assumes sorted
-firstAvailableDay :: Day -> Integer -> [Task] -> Day
+firstAvailableDay :: (Schedulable a) => Day -> Integer -> [a] -> Day
 firstAvailableDay today _ [] = today
 firstAvailableDay today size [t]
-    | diffDays (taskStartDate t) today >= size = today
-    | diffDays (taskEndDate t) today < 0 = today
-    | otherwise = taskEndDate t
+    | isNothing (schStartDate t) = firstAvailableDay today size [schSetStartDate t (Just (ModifiedJulianDay 0))]
+    | diffDays (fromJust $ schStartDate t) today >= size = today
+    | diffDays (fromJust $ taskEndDate t) today < 0 = today
+    | otherwise = fromJust $ taskEndDate t
 firstAvailableDay today size (t1:t2:ts)
-    | diffDays (taskStartDate t1) today >= size = today
-    | diffDays (taskStartDate t1) today < 0 = firstAvailableDay today size (t2:ts)
-    | daysBetween t1 t2 >= size = taskEndDate t1
-    | otherwise = firstAvailableDay (taskEndDate t2) size ts
+    | isNothing (schStartDate t1) = 
+        firstAvailableDay today size (schSetStartDate t1 (Just (ModifiedJulianDay 0)):t2:ts)
+    | isNothing (schStartDate t2) = 
+        firstAvailableDay today size (t1:schSetStartDate t2 (Just (ModifiedJulianDay 0)):ts)
+    | diffDays (fromJust $ schStartDate t1) today >= size = today
+    | diffDays (fromJust $ schStartDate t1) today < 0 = firstAvailableDay today size (t2:ts)
+    | fromJust (daysBetween t1 t2) >= size = fromJust (taskEndDate t1)
+    | otherwise = firstAvailableDay (fromJust $ taskEndDate t2) size ts
 
 -- Get the last free day wich have size consecutive days available before a deadline
 -- assumes sorted
-lastAvailableDay :: Day -> Day -> Integer -> [Task] -> Day
+lastAvailableDay :: (Schedulable a) => Day -> Day -> Integer -> [a] -> Day
 lastAvailableDay today deadline size []
     | addDays (-size) deadline >= today = addDays (-size) deadline
     | otherwise = today
+
 lastAvailableDay today deadline size [t]
-    | addDays (-size) deadline >= taskEndDate t = addDays (-size) deadline
-    | addDays (-size) (taskStartDate t) >= today = addDays (-size) (taskStartDate t)
-    | otherwise = taskEndDate t
+    | isNothing (schStartDate t) = 
+        lastAvailableDay today deadline size [schSetStartDate t (Just $ ModifiedJulianDay 0)]
+    | addDays (-size) deadline >= fromJust (taskEndDate t) = 
+        addDays (-size) deadline
+    | addDays (-size) (fromJust $ schStartDate t) >= today = 
+        addDays (-size) (fromJust $ schStartDate t)
+    | otherwise = fromJust (taskEndDate t)
+        where startDefault = Just $ addDays (-size) (schDeadline t)
+
 lastAvailableDay today deadline size tasks = (lastDay deadline . reverse) tasks
-    where lastDay deadline' []
+    where lastDay :: (Schedulable a) => Day -> [a] -> Day
+          lastDay deadline' []
               | addDays (-size) deadline' >= today = addDays (-size) deadline'
               | otherwise = today
+
           lastDay deadline' [t]
-              | addDays (-size) deadline' >= taskEndDate t = addDays (-size) deadline'
-              | addDays (-size) (taskStartDate t) >= today = addDays (-size) (taskStartDate t)
-              | otherwise = taskEndDate t
+              | isNothing (schStartDate t) = 
+                    lastDay deadline' [schSetStartDate t (Just $ ModifiedJulianDay 0)]
+              | addDays (-size) deadline' >= fromJust (taskEndDate t) = addDays (-size) deadline'
+              | addDays (-size) (fromJust $ schStartDate t) >= today = 
+                    addDays (-size) (fromJust $ schStartDate t)
+              | otherwise = fromJust (taskEndDate t)
+
           lastDay deadline' (t1:t2:ts)
-              | addDays (-size) deadline' >= taskEndDate t1 = addDays (-size) deadline'
-              | addDays (-size) (taskStartDate t1) >= taskEndDate t2 = addDays (-size) (taskStartDate t1)
-              | addDays (-size) (taskStartDate t2) < today = taskEndDate lastTask
-              | otherwise = lastDay (taskStartDate t2) (t2:ts)
+              | isNothing (schStartDate t1) = 
+                    lastDay deadline' (schSetStartDate t1 (Just $ ModifiedJulianDay 0):t2:ts)
+              | addDays (-size) deadline' >= fromJust (taskEndDate t1) = addDays (-size) deadline'
+              | isNothing (schStartDate t2) = 
+                    lastDay deadline' (t1:schSetStartDate t2 (Just $ ModifiedJulianDay 0):ts)
+              | addDays (-size) (fromJust $ schStartDate t1) >= fromJust (taskEndDate t2) =
+                    addDays (-size) (fromJust $ schStartDate t1)
+              | addDays (-size) (fromJust $ schStartDate t2) < today =
+                    fromJust (taskEndDate lastTask)
+              | otherwise = lastDay (fromJust $ schStartDate t2) (t2:ts)
 
           lastTask = last tasks
+          
+
+schSort :: (Schedulable a) => [a] -> [a]
+schSort = sortBy compare
+    where
+        compare t1 t2
+            | schStartDate t1 < schStartDate t2 = LT
+            | schStartDate t1 > schStartDate t2 = GT
+            | schDeadline t1 < schDeadline t2 = LT
+            | schDeadline t1 > schDeadline t2 = GT
+            | schHappy t1 && schSad t2 = LT
+            | schSad t1 && schHappy t2 = GT
+            | otherwise = EQ
     
-scheduleTasks :: Day -> [Task] -> [Task]
-scheduleTasks today = sort . scheduleIterate [] . sort
+scheduleTasks :: (Schedulable a) => Day -> [a] -> [a]
+scheduleTasks today = schSort . scheduleIterate [] . schSort
     where
           scheduleIterate before [] =  before
           scheduleIterate before (t:ts) = scheduleIterate (before ++ [t']) ts
               where t' = scheduleTask today t (before ++ ts)
 
-scheduleTask :: Day -> Task -> [Task] -> Task
+scheduleTask :: (Schedulable a) => Day -> a -> [a] -> a
 scheduleTask today t ts
-    | isHappy t = t { taskStartDate = firstAvailableDay today (taskTime t) (sort ts) }
-    | otherwise = t { taskStartDate = lastAvailableDay today (taskDeadline t) (taskTime t) (sort ts) }
+    | schHappy t = schSetStartDate t $ Just $ firstAvailableDay today (schTime t) (schSort ts)
+    | otherwise = schSetStartDate t $ Just $ lastAvailableDay today (schDeadline t) (schTime t) (schSort ts)

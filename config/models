@@ -14,6 +14,7 @@ Task json
     name Text
     time Int
     deadline Day
+    startDate Day Maybe default=NULL
     happy Bool
     done Bool
     deriving Eq Show

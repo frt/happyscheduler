@@ -1,16 +1,8 @@
 module Handler.Task where
 
 import Import
-import Database.Persist.Sql (fromSqlKey)
 
-import Model
-import qualified HappyScheduler
-
-taskFromEntity :: Entity Model.Task -> HappyScheduler.Task
-taskFromEntity (Entity k v) = HappyScheduler.Task { taskId = fromIntegral (fromSqlKey k)
-                                                   , taskStartDate = ModifiedJulianDay 0
-                                                   , taskFromModel = v
-                                                   }
+import HappyScheduler
 
 getTasksR :: Handler Value
 getTasksR = do
@@ -23,7 +15,7 @@ getTasksR = do
 
     today <- liftIO $! fmap utctDay getCurrentTime
 
-    return $ object ["tasks" .= (HappyScheduler.scheduleTasks today . map taskFromEntity) tasks]
+    return $ object ["tasks" .= scheduleTasks today tasks]
 
 postTasksR :: Handler ()
 postTasksR = do

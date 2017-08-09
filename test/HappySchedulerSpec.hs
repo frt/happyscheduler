@@ -3,30 +3,28 @@ import Test.Hspec
 import Prelude
 import Data.Time.Calendar (Day(ModifiedJulianDay), addDays, fromGregorian)
 import Data.Time.Clock (getCurrentTime, utctDay)
+import Database.Persist.Sql (Entity(..), toSqlKey)
 
-import qualified Model
+import Model
 import HappyScheduler
 
-modelTask :: Model.Task
-modelTask = Model.Task { taskName = "a task"
-                       , taskDone = False
-                       , taskDeadline = ModifiedJulianDay 0
-                       , taskHappy = True
-                       , taskTime = 0
-                       }
-
+entityTask :: Entity Task
+entityTask = Entity (toSqlKey 1) aTask
 
 aTask :: Task
-aTask = Task { taskId = 1
-             , taskStartDate = ModifiedJulianDay 0
-             , taskFromModel = modelTask
+aTask = Task { taskName = "a task"
+             , taskStartDate = Nothing
+             , taskDone = False
+             , taskDeadline = ModifiedJulianDay 0
+             , taskHappy = True
+             , taskTime = 0
              }
 
-sadTask :: Task
-sadTask = aTask {taskFromModel = modelTask {Model.taskHappy = False}}
+sadTask :: Entity Task
+sadTask = Entity (toSqlKey 1) aTask {taskHappy = False}
 
-happyTask :: Task
-happyTask = aTask {taskFromModel = modelTask {Model.taskHappy = True}}
+happyTask :: Entity Task
+happyTask = Entity (toSqlKey 1) aTask {taskHappy = True}
 
 today :: IO Day
 today = fmap utctDay getCurrentTime
@@ -37,94 +35,100 @@ spec =
         context "when the list of tasks is empty" $
             it "should return an empty list" $ do
                 today' <- today
-                scheduleTasks today' [] `shouldBe` ([] :: [Task])
+                scheduleTasks today' [] `shouldBe` ([] :: [Entity Task])
 
         it "if everything equal,should put happy tasks first" $ do
-            let [st1, st2] = scheduleTasks (fromGregorian 2017 7 29) [sadTask, happyTask] 
-            isHappy st1 `shouldBe` True
-            isHappy st2 `shouldBe` False
+            let [Entity _ st1, Entity _ st2] = scheduleTasks (fromGregorian 2017 7 29) [sadTask, happyTask] 
+            taskHappy st1 `shouldBe` True
+            taskHappy st2 `shouldBe` False
 
         it "should give a 'start date'" $ do
             today' <- today
-            let [schTask] = scheduleTasks today' [sadTask { 
-                        taskFromModel = (taskFromModel sadTask) { Model.taskTime = 1 }
+            let [Entity _ schTask] = scheduleTasks today' [sadTask { 
+                        entityVal = (entityVal sadTask) {taskTime = 1}
                     }]
-            taskStartDate schTask `shouldBe` today'
+            taskStartDate schTask `shouldBe` Just today'
 
         it "should start happy tasks as early as possible" $ do
             today' <- today
-            let [schTask] = scheduleTasks today' [happyTask]
-            taskStartDate schTask `shouldBe` today'
+            let [Entity _ schTask] = scheduleTasks today' [happyTask]
+            taskStartDate schTask `shouldBe` Just today'
 
         context "when happy tasks schedule superpose" $
             it "should change the less urgent task to start after the more urgent" $ do
                 today' <- today
-                let t1 = aTask { taskFromModel = modelTask { 
-                        Model.taskHappy = True,
-                        Model.taskTime = 2,
-                        Model.taskDeadline = fromGregorian 2017 8 31 } 
+                let t1 = Entity (toSqlKey 1) aTask {
+                        taskHappy = True,
+                        taskTime = 2,
+                        taskDeadline = fromGregorian 2017 8 31
                     }
-                    t2 = aTask { taskFromModel = modelTask {
-                        Model.taskHappy = True,
-                        Model.taskTime = 3,
-                        Model.taskDeadline = fromGregorian 2017 9 1 } 
+                    t2 = Entity (toSqlKey 2) aTask {
+                        taskHappy = True,
+                        taskTime = 3,
+                        taskDeadline = fromGregorian 2017 9 1
                     }
-                    [st1, st2] = scheduleTasks today' [t1, t2]
+                    [Entity _ st1, Entity _ st2] = scheduleTasks today' [t1, t2]
 
-                taskStartDate st1 `shouldBe` today'
-                taskStartDate st2 `shouldBe` addDays 2 today'
+                taskStartDate st1 `shouldBe` Just today'
+                taskStartDate st2 `shouldBe` Just (addDays 2 today')
 
         context "when sad tasks schedule superpose" $
             it "should change the more urgent task to start before the less urgent" $ do
-                let t1 = aTask { taskFromModel = modelTask { 
-                        Model.taskHappy = False,
-                        Model.taskTime = 2,
-                        Model.taskDeadline = fromGregorian 2017 8 31 } 
+                let t1 = Entity (toSqlKey 3) aTask {
+                        taskHappy = False,
+                        taskTime = 2,
+                        taskDeadline = fromGregorian 2017 8 31
                     }
-                    t2 = aTask { taskFromModel = modelTask {
-                        Model.taskHappy = False,
-                        Model.taskTime = 3,
-                        Model.taskDeadline = fromGregorian 2017 9 1 } 
+                    t2 = Entity (toSqlKey 5) aTask {
+                        taskHappy = False,
+                        taskTime = 3,
+                        taskDeadline = fromGregorian 2017 9 1
                     }
-                    [st1, st2] = scheduleTasks (fromGregorian 2017 7 26) [t1, t2]
+                    [Entity _ st1, Entity _ st2] = scheduleTasks (fromGregorian 2017 7 26) [t1, t2]
 
-                taskStartDate st1 `shouldBe` fromGregorian 2017 8 26
-                taskStartDate st2 `shouldBe` fromGregorian 2017 8 29
+                taskStartDate st1 `shouldBe` Just (fromGregorian 2017 8 26)
+                taskStartDate st2 `shouldBe` Just (fromGregorian 2017 8 29)
 
         context "when happy and sad tasks schedule superpose" $
             it "should change the sad task to start after the happy task" $ do
-                let t1 = aTask { taskFromModel = modelTask { 
-                        Model.taskHappy = True,
-                        Model.taskTime = 7,
-                        Model.taskDeadline = fromGregorian 2017 8 31 } 
+                let t1 = Entity (toSqlKey 7) aTask {
+                        taskHappy = True,
+                        taskTime = 7,
+                        taskDeadline = fromGregorian 2017 8 31
                     }
-                    t2 = aTask { taskFromModel = modelTask {
-                        Model.taskHappy = False,
-                        Model.taskTime = 7,
-                        Model.taskDeadline = fromGregorian 2017 8 31 } 
+                    t2 = Entity (toSqlKey 11) aTask {
+                        taskHappy = False,
+                        taskTime = 7,
+                        taskDeadline = fromGregorian 2017 8 31
                     }
-                    [st1, st2] = scheduleTasks (fromGregorian 2017 8 20) [t1, t2]
+                    [Entity _ st1, Entity _ st2] = scheduleTasks (fromGregorian 2017 8 20) [t1, t2]
 
-                taskStartDate st1 `shouldBe` fromGregorian 2017 8 20
-                taskStartDate st2 `shouldBe` fromGregorian 2017 8 27
+                taskStartDate st1 `shouldBe` Just (fromGregorian 2017 8 20)
+                taskStartDate st2 `shouldBe` Just (fromGregorian 2017 8 27)
 
         it "should sort properly" $ do
-            let t1 = aTask { taskId = 1, taskFromModel = modelTask { 
-                    Model.taskHappy = True,
-                    Model.taskTime = 3,
-                    Model.taskDeadline = fromGregorian 2017 8 13 } 
+            let t1 = Entity (toSqlKey 1) aTask {
+                    taskHappy = True,
+                    taskTime = 3,
+                    taskDeadline = fromGregorian 2017 8 13
                 }
-                t2 = aTask { taskId = 2, taskFromModel = modelTask {
-                    Model.taskHappy = True,
-                    Model.taskTime = 5,
-                    Model.taskDeadline = fromGregorian 2017 8 13 } 
+                t2 = Entity (toSqlKey 2) aTask {
+                    taskHappy = True,
+                    taskTime = 5,
+                    taskDeadline = fromGregorian 2017 8 13
                 }
-                t3 = aTask { taskId = 3, taskFromModel = modelTask {
-                    Model.taskHappy = False,
-                    Model.taskTime = 2,
-                    Model.taskDeadline = fromGregorian 2017 8 7 } 
+                t3 = Entity (toSqlKey 3) aTask {
+                    taskHappy = False,
+                    taskTime = 2,
+                    taskDeadline = fromGregorian 2017 8 7
                 }
                 [st1, st2, st3] = scheduleTasks (fromGregorian 2017 8 1) [t1, t2, t3]
-            st1 `shouldBe` t1 {taskStartDate = fromGregorian 2017 8 1}
-            st2 `shouldBe` t3 {taskStartDate = fromGregorian 2017 8 5}
-            st3 `shouldBe` t2 {taskStartDate = fromGregorian 2017 8 7}
+            st1 `shouldBe` t1 { entityVal = 
+                                (entityVal t1) {taskStartDate = Just (fromGregorian 2017 8 1)} 
+                              }
+            st2 `shouldBe` t3 { entityVal = 
+                                (entityVal t3) {taskStartDate = Just (fromGregorian 2017 8 5)} 
+                              }
+            st3 `shouldBe` t2 { entityVal = 
+                                (entityVal t2) {taskStartDate = Just (fromGregorian 2017 8 7)} 
+                              }

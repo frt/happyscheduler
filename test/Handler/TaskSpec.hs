@@ -57,15 +57,14 @@ spec = withApp $ do
             today <- liftIO $ fmap utctDay getCurrentTime
             let expected = 
                     object [ "tasks" .= [ 
-                        object [ "taskId" .= (1 :: Integer)
-                               , "taskStartDate" .= today
-                               , "taskFromModel" .= object [ "name" .= ("bar task" :: Text)
-                                                , "time"      .= (5 :: Int)
-                                                , "deadline"  .= (fromGregorian 2017 6 23 :: Day)
-                                                , "happy"     .= True
-                                                , "done"      .= False
-                                                ]
-                            ]
+                        object [ "id" .= (1 :: Integer)
+                               , "startDate" .= Just today
+                               , "name" .= ("bar task" :: Text)
+                               , "time"      .= (5 :: Int)
+                               , "deadline"  .= (fromGregorian 2017 6 23 :: Day)
+                               , "happy"     .= True
+                               , "done"      .= False
+                               ]
                         ]
                    ]
             assertJsonResponseIs expected
@@ -81,16 +80,15 @@ spec = withApp $ do
             today <- liftIO $ fmap utctDay getCurrentTime
             let expected = 
                   object [ "tasks" .= [ 
-                    object [ "taskId" .= (2 :: Int)
-                           , "taskStartDate"  .= today
-                            , "taskFromModel" .= object [ "name" .= ("baz task" :: Text)
-                                , "time"      .= (5 :: Int)
-                                , "deadline"  .= (fromGregorian 2017 6 4 :: Day)
-                                , "happy"     .= True
-                                , "done"      .= False
-                                ]
-                            ]
-                    ]
+                    object [ "id" .= (2 :: Int)
+                           , "startDate"  .= Just today
+                           , "name" .= ("baz task" :: Text)
+                           , "time"      .= (5 :: Int)
+                           , "deadline"  .= (fromGregorian 2017 6 4 :: Day)
+                           , "happy"     .= True
+                           , "done"      .= False
+                           ]
+                        ]
                   ]
             assertJsonResponseIs expected
 
@@ -112,6 +110,7 @@ spec = withApp $ do
             assertEq "Should have " task  Task { taskName = name
                                                , taskTime = time
                                                , taskDeadline = deadline
+                                               , taskStartDate = Nothing
                                                , taskHappy = happy
                                                , taskDone = done
                                                }
@@ -130,7 +129,8 @@ spec = withApp $ do
                     object [ "task" .=
                         object [ "name" .= ("foobar task" :: Text)
                                , "time"      .= (7 :: Int)
-                               , "deadline"   .= (fromGregorian 2017 6 5 :: Day)
+                               , "deadline"  .= (fromGregorian 2017 6 5 :: Day)
+                               , "startDate" .= (Nothing :: Maybe Day)
                                , "happy"     .= False
                                , "done"      .= True
                                , "id"        .= (1 :: Int)
@@ -172,6 +172,7 @@ spec = withApp $ do
             assertEq "Should have the task " task  Task { taskName = name
                                                , taskTime = time
                                                , taskDeadline = deadline
+                                               , taskStartDate = Nothing
                                                , taskHappy = happy
                                                , taskDone = done
                                                }
