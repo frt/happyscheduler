@@ -8,6 +8,7 @@ import { Http } from '@angular/http';
 })
 export class TaskListComponent implements OnInit {
     tasks = [];
+    doneTasks = [];
 
     constructor(private http: Http) {}
 
@@ -18,6 +19,10 @@ export class TaskListComponent implements OnInit {
     private fetchTasks() {
         this.http.get('../tasks').subscribe(
             data => this.tasks = JSON.parse(data['_body']).tasks,
+            error => alert('An error occurred: ' + error)
+        );
+        this.http.get('../tasks/done').subscribe(
+            data => this.doneTasks = JSON.parse(data['_body']).tasks,
             error => alert('An error occurred: ' + error)
         );
     }

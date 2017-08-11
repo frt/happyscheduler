@@ -7,5 +7,6 @@
 / HomeR GET
 
 /tasks TasksR POST GET
+!/tasks/done TasksDoneR GET
 /tasks/#TaskId TaskR GET PUT DELETE
 /frontend/*[Text] FrontendR GET

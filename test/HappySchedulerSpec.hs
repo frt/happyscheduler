@@ -8,9 +8,6 @@ import Database.Persist.Sql (Entity(..), toSqlKey)
 import Model
 import HappyScheduler
 
-entityTask :: Entity Task
-entityTask = Entity (toSqlKey 1) aTask
-
 aTask :: Task
 aTask = Task { taskName = "a task"
              , taskStartDate = Nothing

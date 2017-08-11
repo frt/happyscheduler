@@ -17,6 +17,17 @@ getTasksR = do
 
     return $ object ["tasks" .= scheduleTasks today tasks]
 
+getTasksDoneR :: Handler Value
+getTasksDoneR = do
+    uid <- requireAuthId
+    userTasks <- runDB $ selectList [UserTaskUserId ==. uid] [] :: Handler [Entity UserTask]
+    tasks <- runDB $ selectList 
+        [ TaskDone ==. True
+        , TaskId <-. map (\(Entity _ userTask) -> userTaskTaskId userTask) userTasks] 
+        [] :: Handler [Entity Task]
+
+    return $ object ["tasks" .= tasks]
+
 postTasksR :: Handler ()
 postTasksR = do
     uid <- requireAuthId
