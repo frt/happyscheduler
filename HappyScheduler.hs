@@ -67,7 +67,6 @@ lastAvailableDay today deadline size [t]
     | addDays (-size) (fromJust $ schStartDate t) >= today = 
         addDays (-size) (fromJust $ schStartDate t)
     | otherwise = fromJust (taskEndDate t)
-        where startDefault = Just $ addDays (-size) (schDeadline t)
 
 lastAvailableDay today deadline size tasks = (lastDay deadline . reverse) tasks
     where lastDay :: (Schedulable a) => Day -> [a] -> Day
