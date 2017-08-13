@@ -1,3 +1,6 @@
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=frteodoro&url=https://github.com/frt/happyscheduler&title=happyscheduler
+&language=en_GB&tags=github,todo-list,yesod,angular,todo,todolist,angular4&category=software)
+
 # Happy Scheduler
 
 Procrastinate sadness, maximize happyness.
