@@ -25,10 +25,7 @@ export class NewTaskComponent implements OnInit {
                 Validators.required,
                 Validators.pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
             ])),
-            time: new FormControl('', Validators.compose([
-                Validators.required,
-                Validators.pattern('[0-9]+')
-            ]))
+            time: new FormControl('', Validators.pattern('[0-9]*'))
         });
     }
 
@@ -48,7 +45,7 @@ export class NewTaskComponent implements OnInit {
     onSubmit = function(newTask) {
         newTask.done = false;
         newTask.happy = newTask.happy === 'true';
-        newTask.time = Number(newTask.time);
+        newTask.time = newTask.time === '' ? Number(0) : Number(newTask.time);
         this.http.post('../tasks', newTask).subscribe(
             (data) => {
                 this.newTaskForm.reset();
