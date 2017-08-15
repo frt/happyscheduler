@@ -180,7 +180,7 @@ spec = withApp $ do
             taskOwner <- runDB $ getJust (userTaskUserId userTask)
             assertEq "User should be " "bar" $ userIdent taskOwner
 
-    describe "deleteTaskR" $ 
+    describe "deleteTaskR" $ do
         
         it "deletes a task by Id" $ do
             user <- createUser "kill-9"
@@ -196,3 +196,16 @@ spec = withApp $ do
             
             get ("/tasks/1" :: Text) 
             statusIs 404    -- task not found
+
+        it "don't deletes a task if not the task owner" $ do
+            createUser "owner" >>= authenticateAs
+            sendTaskRequest "2 young 2 die" 13 (fromGregorian 2017 06 9) True True
+            statusIs 201    -- task created
+
+            createUser "not owner" >>= authenticateAs
+
+            -- assuming the database is empty and starting Ids from 1
+            request $ do
+                setMethod "DELETE"
+                setUrl ("/tasks/1" :: Text)
+            statusIs 403    -- task not deleted

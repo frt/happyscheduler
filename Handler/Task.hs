@@ -60,7 +60,11 @@ putTaskR taskId = do
 deleteTaskR :: TaskId -> Handler Value
 deleteTaskR taskId = do
     uid <-requireAuthId
-    [userTaskId] <- runDB $ selectKeysList [UserTaskTaskId ==. taskId, UserTaskUserId ==. uid] []
-    runDB $ delete userTaskId
-    runDB $ delete taskId
-    sendResponseStatus status200 ("DELETED" :: Text)
+    tasks <- runDB $
+        selectKeysList [UserTaskTaskId ==. taskId, UserTaskUserId ==. uid] []
+    case tasks of
+        [userTaskId] -> do
+            runDB $ delete userTaskId
+            runDB $ delete taskId
+            sendResponseStatus status200 ("DELETED" :: Text)
+        otherwise -> sendResponseStatus status403 ("You can't do it." :: Text)
