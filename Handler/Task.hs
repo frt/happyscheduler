@@ -67,4 +67,4 @@ deleteTaskR taskId = do
             runDB $ delete userTaskId
             runDB $ delete taskId
             sendResponseStatus status200 ("DELETED" :: Text)
-        otherwise -> sendResponseStatus status403 ("You can't do it." :: Text)
+        _ -> sendResponseStatus status403 ("You can't do it." :: Text)
