@@ -38,10 +38,17 @@ postTasksR = do
 
 getTaskR :: TaskId -> Handler Value
 getTaskR taskId = do
-    task <- runDB $ get taskId
-    case task of
-         Just task' -> return $ object ["task" .= Entity taskId task']
-         Nothing -> sendResponseStatus status404 ("Not Found" :: Text)
+    -- user verification
+    uid <-requireAuthId
+    userTasks <- runDB $ selectKeysList [UserTaskTaskId ==. taskId, UserTaskUserId ==. uid] []
+    case userTasks of
+        [] -> sendResponseStatus status404 ("Not Found" :: Text)
+        _ -> do
+            -- get the task
+            task <- runDB $ get taskId
+            case task of
+                Just task' -> return $ object ["task" .= Entity taskId task']
+                Nothing -> sendResponseStatus status404 ("Not Found" :: Text)
 
 putTaskR :: TaskId -> Handler Value
 putTaskR taskId = do

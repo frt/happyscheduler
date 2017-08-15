@@ -141,7 +141,17 @@ spec = withApp $ do
         it "returns 404 if the task doesn't exists" $ do
             user <- createUser "foobaz"
             authenticateAs user
-            get ("/tasks/2" :: Text) 
+            get ("/tasks/2" :: Text)
+            statusIs 404
+
+        it "returns 404 if the user doesn't own the task" $ do
+            createUser "foo" >>= authenticateAs
+            sendTaskRequest "foobar task" 7 (fromGregorian 2017 06 5) False True
+
+            createUser "bar" >>= authenticateAs
+
+            -- assuming the database is empty and starting Ids from 1
+            get ("/tasks/1" :: Text) 
             statusIs 404
 
     describe "putTaskR" $
