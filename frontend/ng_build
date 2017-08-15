@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# builds to production. 
+# this hashing thing yesod will do it his way, so not
+# done here.
+ng build -prod --output-hashing=none --output-path ../static/frontend/
