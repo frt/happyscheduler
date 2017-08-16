@@ -61,8 +61,13 @@ putTaskR taskId = do
              _ <- runDB $ insert (UserTask taskId uid)
              sendResponseStatus status201 ("CREATED" :: Text)
          Just _ -> do
-             runDB $ replace taskId task
-             sendResponseStatus status200 ("UPDATED" :: Text)
+             userTasks <- runDB $
+                 selectKeysList [UserTaskTaskId ==. taskId, UserTaskUserId ==. uid] []
+             case userTasks of
+                 [] -> sendResponseStatus status403 ("You can't do it." :: Text)
+                 _ -> do
+                     runDB $ replace taskId task
+                     sendResponseStatus status200 ("UPDATED" :: Text)
 
 deleteTaskR :: TaskId -> Handler Value
 deleteTaskR taskId = do

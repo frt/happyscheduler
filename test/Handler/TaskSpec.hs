@@ -7,6 +7,7 @@ import Data.Maybe
 import Network.Wai.Test (SResponse (..))
 import Data.Aeson.Types (FromJSON)
 import Data.Time.Clock (getCurrentTime, utctDay)
+import Data.ByteString.Lazy.Internal (ByteString)
 
 sendTaskRequest :: Text -> Int -> Day -> Bool -> Bool -> YesodExample App ()
 sendTaskRequest name time deadline happy done = do
@@ -32,6 +33,22 @@ assertJsonResponseIs expected = do
     response <- getResponse
     let actual = fromJust $ decode $ simpleBody $ fromJust response
     assertEq "Response should be " expected actual
+
+anEncodedTask :: Data.ByteString.Lazy.Internal.ByteString
+anEncodedTask =
+            let name    = "bar task" :: Text
+                time    = 5 :: Int
+                deadline = fromGregorian 2017 6 8 :: Day
+                happy   = True :: Bool
+                done    = False :: Bool
+                body = object [ "name"      .= name
+                              , "time"      .= time
+                              , "deadline"   .= deadline
+                              , "happy"     .= happy
+                              , "done"      .= done
+                              ]
+                encoded = encode body
+            in encoded
 
 spec :: Spec
 spec = withApp $ do
@@ -154,41 +171,46 @@ spec = withApp $ do
             get ("/tasks/1" :: Text) 
             statusIs 404
 
-    describe "putTaskR" $
+    describe "putTaskR" $ do
         
         it "inserts a task with id=7 to the user bar" $ do
             user <- createUser "bar"
             authenticateAs user
-            let name    = "bar task" :: Text
-                time    = 5 :: Int
-                deadline = fromGregorian 2017 06 8 :: Day
-                happy   = True :: Bool
-                done    = False :: Bool
-                body = object [ "name"      .= name
-                              , "time"      .= time
-                              , "deadline"   .= deadline
-                              , "happy"     .= happy
-                              , "done"      .= done
-                              ]
-                encoded = encode body
             request $ do
                 setMethod "PUT"
                 setUrl ("/tasks/7" :: Text)
-                setRequestBody encoded
+                setRequestBody anEncodedTask
                 addRequestHeader ("Content-Type", "application/json")
 
             statusIs 201
             task <- runDB $ getJust (toSqlKey 7)
-            assertEq "Should have the task " task  Task { taskName = name
-                                               , taskTime = time
-                                               , taskDeadline = deadline
+            assertEq "Should have the task " task  Task { taskName = "bar task" :: Text
+                                               , taskTime = 5 :: Int
+                                               , taskDeadline = fromGregorian 2017 6 8
                                                , taskStartDate = Nothing
-                                               , taskHappy = happy
-                                               , taskDone = done
+                                               , taskHappy = True
+                                               , taskDone = False
                                                }
             [Entity _ userTask] <- runDB $ selectList [UserTaskTaskId ==. toSqlKey 7] []
             taskOwner <- runDB $ getJust (userTaskUserId userTask)
             assertEq "User should be " "bar" $ userIdent taskOwner
+
+        it "returns 403 if the user doesn't own the task" $ do
+            createUser "owner" >>= authenticateAs
+            request $ do
+                setMethod "PUT"
+                setUrl ("/tasks/11" :: Text)
+                setRequestBody anEncodedTask
+                addRequestHeader ("Content-Type", "application/json")
+            statusIs 201    -- task created with PUT
+
+            createUser "other" >>= authenticateAs
+            request $ do
+                setMethod "PUT"
+                setUrl ("/tasks/11" :: Text)
+                setRequestBody anEncodedTask
+                addRequestHeader ("Content-Type", "application/json")
+            statusIs 403
 
     describe "deleteTaskR" $ do
         
