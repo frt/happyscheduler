@@ -1,0 +1,12 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Exec=xdg-open https://happyscheduler.today/
+Name=Happy Scheduler!
+GenericName="TODO list"
+Comment=A todo list to minimize the time you spend on boring tasks.
+Comment[pt_BR]=Uma lista de tarefas para minimizar o tempo que tu gasta com coisas chatas.
+Icon=happyscheduler-logo.png

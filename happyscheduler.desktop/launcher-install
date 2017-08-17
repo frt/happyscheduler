@@ -1,0 +1,9 @@
+#!/bin/sh
+
+icons_dir=/usr/share/pixmaps
+applications_dir=/usr/share/applications
+
+sudo mkdir -p "$icons_dir"
+sudo mkdir -p "$applications_dir"
+sudo cp happyscheduler-logo.png "$icons_dir"
+sudo cp happyscheduler.desktop "$applications_dir"
