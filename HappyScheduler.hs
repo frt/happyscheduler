@@ -110,11 +110,26 @@ schSort = sortBy compare
         dlGT t1' t2' = t1' > t2'
     
 scheduleTasks :: (Schedulable a) => Day -> [a] -> [a]
-scheduleTasks today = schSort . scheduleIterate [] . schSort
+scheduleTasks today = schSort . scheduleIterate [] . sortBy fstCompare
     where
-          scheduleIterate before [] =  before
-          scheduleIterate before (t:ts) = scheduleIterate (before ++ [t']) ts
-              where t' = scheduleTask today t (before ++ ts)
+        scheduleIterate before [] =  before
+        scheduleIterate before (t:ts) = scheduleIterate (before ++ [t']) ts
+            where t' = scheduleTask today t (before ++ ts)
+
+        fstCompare t1 t2
+            | schDeadline t1 `dlLT` schDeadline t2 = LT
+            | schDeadline t1 `dlGT` schDeadline t2 = GT
+            | schStartDate t1 < schStartDate t2 = LT
+            | schStartDate t1 > schStartDate t2 = GT
+            | schDeadline t1 < schDeadline t2 = LT
+            | schDeadline t1 > schDeadline t2 = GT
+            | schHappy t1 && schSad t2 = LT
+            | schSad t1 && schHappy t2 = GT
+            | otherwise = EQ
+        dlLT (Just _) Nothing = True
+        dlLT _ _ = False
+        dlGT Nothing (Just _) = True
+        dlGT _ _ = False
 
 scheduleTask :: (Schedulable a) => Day -> a -> [a] -> a
 scheduleTask today t ts
