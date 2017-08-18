@@ -1,7 +1,7 @@
 module HappySchedulerSpec (spec) where
 import Test.Hspec
 import Prelude
-import Data.Time.Calendar (Day(ModifiedJulianDay), addDays, fromGregorian)
+import Data.Time.Calendar (Day, addDays, fromGregorian)
 import Data.Time.Clock (getCurrentTime, utctDay)
 import Database.Persist.Sql (Entity(..), toSqlKey)
 
@@ -12,7 +12,7 @@ aTask :: Task
 aTask = Task { taskName = "a task"
              , taskStartDate = Nothing
              , taskDone = False
-             , taskDeadline = ModifiedJulianDay 0
+             , taskDeadline = Nothing
              , taskHappy = True
              , taskTime = 0
              }
@@ -53,33 +53,34 @@ spec =
 
         context "when happy tasks schedule superpose" $
             it "should change the less urgent task to start after the more urgent" $ do
-                today' <- today
-                let t1 = Entity (toSqlKey 1) aTask {
+                
+                let today' = fromGregorian 2017 8 18
+                    t1 = Entity (toSqlKey 1) aTask {
                         taskHappy = True,
                         taskTime = 2,
-                        taskDeadline = fromGregorian 2017 8 31
+                        taskDeadline = Just (fromGregorian 2017 8 31)
                     }
                     t2 = Entity (toSqlKey 2) aTask {
                         taskHappy = True,
                         taskTime = 3,
-                        taskDeadline = fromGregorian 2017 9 1
+                        taskDeadline = Just (fromGregorian 2017 9 1)
                     }
                     [Entity _ st1, Entity _ st2] = scheduleTasks today' [t1, t2]
 
                 taskStartDate st1 `shouldBe` Just today'
-                taskStartDate st2 `shouldBe` Just (addDays 2 today')
+                taskStartDate st2 `shouldBe` Just (fromGregorian 2017 8 20)
 
         context "when sad tasks schedule superpose" $
             it "should change the more urgent task to start before the less urgent" $ do
                 let t1 = Entity (toSqlKey 3) aTask {
                         taskHappy = False,
                         taskTime = 2,
-                        taskDeadline = fromGregorian 2017 8 31
+                        taskDeadline = Just (fromGregorian 2017 8 31)
                     }
                     t2 = Entity (toSqlKey 5) aTask {
                         taskHappy = False,
                         taskTime = 3,
-                        taskDeadline = fromGregorian 2017 9 1
+                        taskDeadline = Just (fromGregorian 2017 9 1)
                     }
                     [Entity _ st1, Entity _ st2] = scheduleTasks (fromGregorian 2017 7 26) [t1, t2]
 
@@ -91,12 +92,12 @@ spec =
                 let t1 = Entity (toSqlKey 7) aTask {
                         taskHappy = True,
                         taskTime = 7,
-                        taskDeadline = fromGregorian 2017 8 31
+                        taskDeadline = Just (fromGregorian 2017 8 31)
                     }
                     t2 = Entity (toSqlKey 11) aTask {
                         taskHappy = False,
                         taskTime = 7,
-                        taskDeadline = fromGregorian 2017 8 31
+                        taskDeadline = Just (fromGregorian 2017 8 31)
                     }
                     [Entity _ st1, Entity _ st2] = scheduleTasks (fromGregorian 2017 8 20) [t1, t2]
 
@@ -107,17 +108,17 @@ spec =
             let t1 = Entity (toSqlKey 1) aTask {
                     taskHappy = True,
                     taskTime = 3,
-                    taskDeadline = fromGregorian 2017 8 13
+                    taskDeadline = Just (fromGregorian 2017 8 13)
                 }
                 t2 = Entity (toSqlKey 2) aTask {
                     taskHappy = True,
                     taskTime = 5,
-                    taskDeadline = fromGregorian 2017 8 13
+                    taskDeadline = Just (fromGregorian 2017 8 13)
                 }
                 t3 = Entity (toSqlKey 3) aTask {
                     taskHappy = False,
                     taskTime = 2,
-                    taskDeadline = fromGregorian 2017 8 7
+                    taskDeadline = Just (fromGregorian 2017 8 7)
                 }
                 [st1, st2, st3] = scheduleTasks (fromGregorian 2017 8 1) [t1, t2, t3]
             st1 `shouldBe` t1 { entityVal = 
@@ -129,3 +130,17 @@ spec =
             st3 `shouldBe` t2 { entityVal = 
                                 (entityVal t2) {taskStartDate = Just (fromGregorian 2017 8 7)} 
                               }
+
+        context "when a task don't have a deadline" $
+            it "should start after the last task" $ do
+                let taskWithDeadline = Entity (toSqlKey 4) aTask {
+                        taskDeadline = Just (fromGregorian 2017 8 23),
+                        taskTime = 1,
+                        taskHappy = False
+                    }
+                    taskWithoutDeadline = Entity (toSqlKey 5) aTask {
+                        taskDeadline = Nothing,
+                        taskHappy = False
+                    }
+                    [_, st2] = scheduleTasks (fromGregorian 2017 8 18) [taskWithDeadline, taskWithoutDeadline]
+                schStartDate st2 `shouldBe` Just (fromGregorian 2017 8 23)

@@ -7,13 +7,14 @@ import Data.Maybe
 import Network.Wai.Test (SResponse (..))
 import Data.Aeson.Types (FromJSON)
 import Data.Time.Clock (getCurrentTime, utctDay)
-import Data.ByteString.Lazy.Internal (ByteString)
+import qualified Data.ByteString.Lazy.Internal as LBS (ByteString)
+import HappyScheduler (Deadline)
 
-sendTaskRequest :: Text -> Int -> Day -> Bool -> Bool -> YesodExample App ()
+sendTaskRequest :: Text -> Int -> Deadline -> Bool -> Bool -> YesodExample App ()
 sendTaskRequest name time deadline happy done = do
     let body = object [ "name"      .= (name :: Text)
                       , "time"      .= (time :: Int)
-                      , "deadline"   .= (deadline :: Day)
+                      , "deadline"  .= (deadline :: Deadline)
                       , "happy"     .= (happy :: Bool)
                       , "done"      .= (done :: Bool)
                       ]
@@ -25,6 +26,30 @@ sendTaskRequest name time deadline happy done = do
         addRequestHeader ("Content-Type", "application/json")
     return ()
 
+sendPutRequest :: Text -> LBS.ByteString -> YesodExample App ()
+sendPutRequest url encodedTask = do
+    request $ do
+        setMethod "PUT"
+        setUrl url
+        setRequestBody encodedTask
+        addRequestHeader ("Content-Type", "application/json")
+    return ()
+
+postTaskAndVerifyDbInsertion :: Text -> Int -> Deadline -> Bool -> Bool -> YesodExample App ()
+postTaskAndVerifyDbInsertion name time deadline happy done = do
+    createUser "foo" >>= authenticateAs
+    sendTaskRequest name time deadline happy done
+
+    statusIs 201
+    [Entity _ task] <- runDB $ selectList [TaskName ==. name] []
+    assertEq "Should have " task Task { taskName = name
+                                        , taskTime = time
+                                        , taskDeadline = deadline
+                                        , taskStartDate = Nothing
+                                        , taskHappy = happy
+                                        , taskDone = done
+                                        }
+
 assertJsonResponseIs :: (Show a, Eq a, FromJSON a) => a -> YesodExample App ()
 assertJsonResponseIs expected = do
     statusIs 200
@@ -34,7 +59,7 @@ assertJsonResponseIs expected = do
     let actual = fromJust $ decode $ simpleBody $ fromJust response
     assertEq "Response should be " expected actual
 
-anEncodedTask :: Data.ByteString.Lazy.Internal.ByteString
+anEncodedTask :: LBS.ByteString
 anEncodedTask =
             let name    = "bar task" :: Text
                 time    = 5 :: Int
@@ -61,11 +86,11 @@ spec = withApp $ do
         it "gives only the tasks of the autheticated user" $ do
             userBar <- createUser "bar"
             authenticateAs userBar
-            sendTaskRequest "bar task" 5 (fromGregorian 2017 06 23) True False
+            sendTaskRequest "bar task" 5 (Just $ fromGregorian 2017 06 23) True False
 
             userBaz <- createUser "bVaz"
             authenticateAs userBaz
-            sendTaskRequest "baz task" 5 (fromGregorian 2017 06 4) True False
+            sendTaskRequest "baz task" 5 (Just $ fromGregorian 2017 06 4) True False
 
             -- send a get request
             authenticateAs userBar
@@ -89,8 +114,8 @@ spec = withApp $ do
         it "gives only the tasks not done" $ do
             userBar <- createUser "bar"
             authenticateAs userBar
-            sendTaskRequest "bar task" 5 (fromGregorian 2017 06 23) True True
-            sendTaskRequest "baz task" 5 (fromGregorian 2017 06 4) True False
+            sendTaskRequest "bar task" 5 (Just $ fromGregorian 2017 06 23) True True
+            sendTaskRequest "baz task" 5 (Just $ fromGregorian 2017 06 4) True False
 
             get TasksR
 
@@ -109,35 +134,30 @@ spec = withApp $ do
                   ]
             assertJsonResponseIs expected
 
-    describe "postTasksR" $
+    describe "postTasksR" $ do
         
         it "inserts a task to the user foo" $ do
             let name = "foo task" :: Text
                 time = 3 :: Int
-                deadline = fromGregorian 2017 06 4 :: Day
+                deadline = Just (fromGregorian 2017 06 4) :: Deadline
                 happy = True
                 done = False
-        
-            userBar <- createUser "foo"
-            authenticateAs userBar
-            sendTaskRequest name time deadline happy done
+            postTaskAndVerifyDbInsertion name time deadline happy done
 
-            statusIs 201
-            [Entity _ task] <- runDB $ selectList [TaskName ==. name] []
-            assertEq "Should have " task  Task { taskName = name
-                                               , taskTime = time
-                                               , taskDeadline = deadline
-                                               , taskStartDate = Nothing
-                                               , taskHappy = happy
-                                               , taskDone = done
-                                               }
+        it "inserts a task without a deadline" $ do
+            let name = "foo task" :: Text
+                time = 5 :: Int
+                deadline = Nothing :: Deadline
+                happy = True
+                done = False
+            postTaskAndVerifyDbInsertion name time deadline happy done
             
     describe "getTaskR" $ do
         
         it "gets a task by Id" $ do
             user <- createUser "foobar"
             authenticateAs user
-            sendTaskRequest "foobar task" 7 (fromGregorian 2017 06 5) False True
+            sendTaskRequest "foobar task" 7 (Just $ fromGregorian 2017 06 5) False True
 
             -- assuming the database is empty and starting Ids from 1
             get ("/tasks/1" :: Text) 
@@ -163,7 +183,7 @@ spec = withApp $ do
 
         it "returns 404 if the user doesn't own the task" $ do
             createUser "foo" >>= authenticateAs
-            sendTaskRequest "foobar task" 7 (fromGregorian 2017 06 5) False True
+            sendTaskRequest "foobar task" 7 (Just $ fromGregorian 2017 06 5) False True
 
             createUser "bar" >>= authenticateAs
 
@@ -186,7 +206,7 @@ spec = withApp $ do
             task <- runDB $ getJust (toSqlKey 7)
             assertEq "Should have the task " task  Task { taskName = "bar task" :: Text
                                                , taskTime = 5 :: Int
-                                               , taskDeadline = fromGregorian 2017 6 8
+                                               , taskDeadline = Just $ fromGregorian 2017 6 8
                                                , taskStartDate = Nothing
                                                , taskHappy = True
                                                , taskDone = False
@@ -197,19 +217,11 @@ spec = withApp $ do
 
         it "returns 403 if the user doesn't own the task" $ do
             createUser "owner" >>= authenticateAs
-            request $ do
-                setMethod "PUT"
-                setUrl ("/tasks/11" :: Text)
-                setRequestBody anEncodedTask
-                addRequestHeader ("Content-Type", "application/json")
+            sendPutRequest ("/tasks/11" :: Text) anEncodedTask
             statusIs 201    -- task created with PUT
 
             createUser "other" >>= authenticateAs
-            request $ do
-                setMethod "PUT"
-                setUrl ("/tasks/11" :: Text)
-                setRequestBody anEncodedTask
-                addRequestHeader ("Content-Type", "application/json")
+            sendPutRequest ("/tasks/11" :: Text) anEncodedTask
             statusIs 403
 
     describe "deleteTaskR" $ do
@@ -217,7 +229,7 @@ spec = withApp $ do
         it "deletes a task by Id" $ do
             user <- createUser "kill-9"
             authenticateAs user
-            sendTaskRequest "2 young 2 die" 11 (fromGregorian 2017 06 9) True True
+            sendTaskRequest "2 young 2 die" 11 (Just $ fromGregorian 2017 06 9) True True
             statusIs 201    -- task created
 
             -- assuming the database is empty and starting Ids from 1
@@ -231,7 +243,7 @@ spec = withApp $ do
 
         it "don't deletes a task if not the task owner" $ do
             createUser "owner" >>= authenticateAs
-            sendTaskRequest "2 young 2 die" 13 (fromGregorian 2017 06 9) True True
+            sendTaskRequest "2 young 2 die" 13 (Just $ fromGregorian 2017 06 9) True True
             statusIs 201    -- task created
 
             createUser "not owner" >>= authenticateAs

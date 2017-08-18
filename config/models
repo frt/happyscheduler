@@ -13,12 +13,14 @@ Email
 Task json
     name Text
     time Int
-    deadline Day
-    startDate Day Maybe default=NULL
+    deadline Day Maybe default='NULL'
+    startDate Day Maybe default='NULL'
     happy Bool
     done Bool
     deriving Eq Show
 
+-- Made this to avoid the userId in the Task JSON.
+-- TODO: Remove this entity and make custom ToJSON and FromJSON instances.
 UserTask
     taskId TaskId
     userId UserId

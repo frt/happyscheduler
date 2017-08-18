@@ -21,10 +21,7 @@ export class NewTaskComponent implements OnInit {
         this.newTaskForm = new FormGroup({
             name: new FormControl('', Validators.required),
             happy: new FormControl('true', Validators.required),
-            deadline: new FormControl('', Validators.compose([
-                Validators.required,
-                Validators.pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')
-            ])),
+            deadline: new FormControl('', Validators.pattern('[0-9]{4}-[0-9]{2}-[0-9]{2}')),
             time: new FormControl('', Validators.pattern('[0-9]*'))
         });
     }
@@ -46,6 +43,7 @@ export class NewTaskComponent implements OnInit {
         newTask.done = false;
         newTask.happy = newTask.happy === 'true';
         newTask.time = newTask.time === '' ? Number(0) : Number(newTask.time);
+        newTask.deadline = newTask.deadline ? newTask.deadline : null;
         this.http.post('../tasks', newTask).subscribe(
             (data) => {
                 this.newTaskForm.reset();

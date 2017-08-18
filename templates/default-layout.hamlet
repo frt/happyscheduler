@@ -3,7 +3,8 @@
 <nav .navbar.navbar-default.navbar-static-top>
     <div .container>
         <div .navbar-header>
-            <img src="/static/image/happyscheduler-logo.png">
+            <a href="@{HomeR}">
+                <img src="/static/image/happyscheduler-logo.png">
             <button type="button" .navbar-toggle.collapsed data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation
                 <span class="icon-bar">
