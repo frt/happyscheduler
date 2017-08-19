@@ -25,9 +25,17 @@
 
 .icon-happy:before {
   content: "\1f642";
+  background-color: yellow;
+  border-radius: 0.6em;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 .icon-sad:before {
   content: "\1f641";
+  background-color: lightgrey;
+  border-radius: 0.6em;
+  padding-left: 1px;
+  padding-right: 1px;
 }
 .icon-cross:before {
   content: "\ea0f";
