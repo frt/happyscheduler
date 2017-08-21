@@ -17,13 +17,7 @@ Task
     startDate Day Maybe default='NULL'
     happy Bool
     done Bool
-    deriving Eq Show
-
--- Made this to avoid the userId in the Task JSON.
--- TODO: Remove this entity and make custom ToJSON and FromJSON instances.
-UserTask
-    taskId TaskId
     userId UserId
-    UniqueUserTask taskId userId
+    deriving Eq Show
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

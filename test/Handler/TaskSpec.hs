@@ -37,18 +37,20 @@ sendPutRequest url encodedTask = do
 
 postTaskAndVerifyDbInsertion :: Text -> Int -> Deadline -> Bool -> Bool -> YesodExample App ()
 postTaskAndVerifyDbInsertion name time deadline happy done = do
-    createUser "foo" >>= authenticateAs
+    user@(Entity uid _) <- createUser "foo"
+    authenticateAs user
     sendTaskRequest name time deadline happy done
 
     statusIs 201
     [Entity _ task] <- runDB $ selectList [TaskName ==. name] []
     assertEq "Should have " task Task { taskName = name
-                                        , taskTime = time
-                                        , taskDeadline = deadline
-                                        , taskStartDate = Nothing
-                                        , taskHappy = happy
-                                        , taskDone = done
-                                        }
+                                      , taskTime = time
+                                      , taskDeadline = deadline
+                                      , taskStartDate = Nothing
+                                      , taskHappy = happy
+                                      , taskDone = done
+                                      , taskUserId = uid
+                                      }
 
 assertJsonResponseIs :: (Show a, Eq a, FromJSON a) => a -> YesodExample App ()
 assertJsonResponseIs expected = do
@@ -194,7 +196,7 @@ spec = withApp $ do
     describe "putTaskR" $ do
         
         it "inserts a task with id=7 to the user bar" $ do
-            user <- createUser "bar"
+            user@(Entity uid _) <- createUser "bar"
             authenticateAs user
             request $ do
                 setMethod "PUT"
@@ -210,9 +212,9 @@ spec = withApp $ do
                                                , taskStartDate = Nothing
                                                , taskHappy = True
                                                , taskDone = False
+                                               , taskUserId = uid
                                                }
-            [Entity _ userTask] <- runDB $ selectList [UserTaskTaskId ==. toSqlKey 7] []
-            taskOwner <- runDB $ getJust (userTaskUserId userTask)
+            taskOwner <- runDB $ getJust (taskUserId task)
             assertEq "User should be " "bar" $ userIdent taskOwner
 
         it "returns 403 if the user doesn't own the task" $ do

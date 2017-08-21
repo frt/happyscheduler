@@ -1,7 +1,7 @@
 module HappySchedulerSpec (spec) where
 import Test.Hspec
 import Prelude
-import Data.Time.Calendar (Day, addDays, fromGregorian)
+import Data.Time.Calendar (Day, fromGregorian)
 import Data.Time.Clock (getCurrentTime, utctDay)
 import Database.Persist.Sql (Entity(..), toSqlKey)
 
@@ -15,6 +15,7 @@ aTask = Task { taskName = "a task"
              , taskDeadline = Nothing
              , taskHappy = True
              , taskTime = 0
+             , taskUserId = toSqlKey 0
              }
 
 sadTask :: Entity Task

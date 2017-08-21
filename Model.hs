@@ -6,6 +6,7 @@ import ClassyPrelude.Yesod
 import Database.Persist.Quasi
 import HappyScheduler (Schedulable(..))
 import Data.Aeson
+import Database.Persist.Sql (toSqlKey)
 
 -- You can define all of your database entities in the entities file.
 -- You can find more information on persistent and how to declare entities
@@ -40,5 +41,6 @@ instance FromJSON Task where
         <*> o .:? "startDate"
         <*> o .: "happy"
         <*> o .: "done"
+        <*> o .:? "userId" .!= toSqlKey 0
 
     parseJSON _ = mzero
