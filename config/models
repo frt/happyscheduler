@@ -10,7 +10,7 @@ Email
     verkey Text Maybe
     UniqueEmail email
 
-Task json
+Task
     name Text
     time Int
     deadline Day Maybe default='NULL'
