@@ -20,26 +20,18 @@ import Database.Persist.Sql  ( SqlPersistM
 import Foundation            as X
 import Model                 as X
 import Test.Hspec            as X
+import Text.Shakespeare.Text (st)
 import Yesod.Default.Config2 (useEnv, loadYamlSettings)
 import Yesod.Auth            as X
 import Yesod.Test            as X
-
--- Wiping the database
-import Database.Persist.Sqlite ( sqlDatabase
-                               , createSqlPool
-                               , wrapConnectionInfo
-                               , mkSqliteConnectionInfo
-                               , fkEnabled)
-import qualified Database.Sqlite as Sqlite
-import Control.Monad.Logger                 (runLoggingT)
-import Settings (appDatabaseConf)
-import Yesod.Core (messageLoggerSource)
-import Lens.Micro (set)
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
     pool <- fmap appConnPool getTestYesod
     liftIO $ runSqlPersistMPool query pool
+
+runDBWithApp :: App -> SqlPersistM a -> IO a
+runDBWithApp app query = runSqlPersistMPool query (appConnPool app)
 
 withApp :: SpecWith (TestApp App) -> Spec
 withApp = before $ do
@@ -56,31 +48,23 @@ withApp = before $ do
 -- 'withApp' calls it before each test, creating a clean environment for each
 -- spec to run in.
 wipeDB :: App -> IO ()
-wipeDB app = do
-    let settings = appSettings app
-        logFunc = messageLoggerSource app (appLogger app)
+wipeDB app = runDBWithApp app $ do
+    tables <- getTables
+    sqlBackend <- ask
 
-    sqliteConn <- rawConnection (sqlDatabase $ appDatabaseConf settings)
-    let infoNoFK = set fkEnabled False $ mkSqliteConnectionInfo ""
-        wrapper = wrapConnectionInfo infoNoFK sqliteConn
-    pool <- runLoggingT (createSqlPool wrapper 1) logFunc
-
-    flip runSqlPersistMPool pool $ do
-        tables <- getTables
-        sqlBackend <- ask
-        let queries = map (\t -> "DELETE FROM " ++ (connEscapeName sqlBackend $ DBName t)) tables
-        forM_ queries (\q -> rawExecute q [])
-
-rawConnection :: Text -> IO Sqlite.Connection
-rawConnection t = Sqlite.open t
-
-disableForeignKeys :: Sqlite.Connection -> IO ()
-disableForeignKeys conn = Sqlite.prepare conn "PRAGMA foreign_keys = OFF;" >>= void . Sqlite.step
+    let escapedTables = map (connEscapeName sqlBackend . DBName) tables
+        query = "TRUNCATE TABLE " ++ intercalate ", " escapedTables
+    rawExecute query []
 
 getTables :: MonadIO m => ReaderT SqlBackend m [Text]
 getTables = do
-    tables <- rawSql "SELECT name FROM sqlite_master WHERE type = 'table';" []
-    return (fmap unSingle tables)
+    tables <- rawSql [st|
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema = 'public';
+    |] []
+
+    return $ map unSingle tables
 
 -- | Authenticate as a user. This relies on the `auth-dummy-login: true` flag
 -- being set in test-settings.yaml, which enables dummy authentication in

@@ -31,9 +31,13 @@ gauth-client-secret: "_env:GAUTH_CLIENT_SECRET:<Client secret>"
 # See https://github.com/yesodweb/yesod/wiki/Configuration#parsing-numeric-values-as-strings
 
 database:
+  user:     "_env:PGUSER:happyscheduler"
+  password: "_env:PGPASS:happyscheduler"
+  host:     "_env:PGHOST:localhost"
+  port:     "_env:PGPORT:5432"
   # See config/test-settings.yml for an override during tests
-  database: "_env:SQLITE_DATABASE:happyscheduler.sqlite3"
-  poolsize: "_env:SQLITE_POOLSIZE:10"
+  database: "_env:PGDATABASE:happyscheduler"
+  poolsize: "_env:PGPOOLSIZE:10"
 
 copyright: copyleft
 analytics: UA-104197447-1

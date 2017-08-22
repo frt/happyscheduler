@@ -13,8 +13,8 @@ Email
 Task
     name Text
     time Int
-    deadline Day Maybe default='NULL'
-    startDate Day Maybe default='NULL'
+    deadline Day Maybe default=NULL
+    startDate Day Maybe default=NULL
     happy Bool
     done Bool
     userId UserId
