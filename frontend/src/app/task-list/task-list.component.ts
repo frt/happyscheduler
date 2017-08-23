@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
+import { PushNotificationsService } from 'angular2-notifications';
 
 @Component({
     selector: 'app-task-list',
@@ -9,14 +10,36 @@ import { Http } from '@angular/http';
 export class TaskListComponent implements OnInit {
     tasks = [];
     doneTasks = [];
+    timerToken: number;
 
-    constructor(private http: Http) {}
+    constructor(private http: Http, private _pushNotifications: PushNotificationsService) {
+    }
 
     ngOnInit() {
         this.fetchTasks();
     }
 
+    notify() {
+	let options = {
+	    body: "next task: " + this.tasks[0].name,
+            icon: "/static/image/happyscheduler-logo.png"
+	}
+
+	let notify = this._pushNotifications.create('happy scheduler', options).subscribe(
+            res => {},
+            err => console.log(err)
+	);
+    }
+
     public fetchTasks() {
+        if (this.timerToken)
+            clearTimeout(this.timerToken);
+        this.timerToken = 
+            setInterval(
+                () => this.notify(), 
+                (12 * 1000 * 60 * 60)   // every 12 hours
+            );
+
         this.http.get('../tasks').subscribe(
             data => this.tasks = JSON.parse(data['_body']).tasks,
             error => alert('An error occurred: ' + error)

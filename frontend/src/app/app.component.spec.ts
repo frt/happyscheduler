@@ -1,6 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { InfoMessagesService } from './info-messages.service';
+import { PushNotificationsService } from 'angular2-notifications';
 
 import { AppComponent } from './app.component';
 
@@ -14,7 +15,8 @@ describe('AppComponent', () => {
             AppComponent
         ],
         providers: [
-            InfoMessagesService
+            InfoMessagesService,
+            PushNotificationsService
         ]
     }).compileComponents();
   }));

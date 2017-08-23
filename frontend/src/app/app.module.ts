@@ -3,6 +3,7 @@ import { NgModule, Injectable } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PushNotificationsModule } from 'angular2-notifications';
 
 import { AppComponent } from './app.component';
 import { TaskListComponent } from './task-list/task-list.component';
@@ -19,6 +20,7 @@ import { InfoMessagesService } from './info-messages.service';
         BrowserModule,
         ReactiveFormsModule,
         HttpModule,
+        PushNotificationsModule,
         RouterModule.forRoot([
             {
                 path: 'task-list',
