@@ -20,8 +20,13 @@ export class TaskListComponent implements OnInit {
     }
 
     notify() {
+        var msg = '';
+        if (this.tasks && this.tasks[0] && this.tasks[0].name)
+            msg = 'next task: ' + this.tasks[0].name;
+        else
+            msg = 'Nothing to do! Just enjoy life!';
 	let options = {
-	    body: "next task: " + this.tasks[0].name,
+	    body: msg,
             icon: "/static/image/happyscheduler-logo.png"
 	}
 
