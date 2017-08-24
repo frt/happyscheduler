@@ -1,8 +1,9 @@
 import { DebugElement } from '@angular/core';
-import { TestBed, async, inject } from '@angular/core/testing';
+import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpModule, Http } from '@angular/http';
 import { InfoMessagesService } from '../info-messages.service';
+import { PushNotificationsService } from 'angular2-notifications';
 
 import { Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -17,7 +18,7 @@ import { NewTaskComponent } from '../new-task/new-task.component';
 import { TaskListComponent } from './task-list.component';
 
 describe('TaskListComponent', () => {
-    let fixture;
+    let fixture;//: ComponentFixture<TaskListComponent>;
     let component: TaskListComponent;
     let el;
     let initialNrOfTasks;
@@ -36,9 +37,13 @@ describe('TaskListComponent', () => {
             ],
             providers: [
                 { provide: ComponentFixtureAutoDetect, useValue: true },
-                InfoMessagesService
+                InfoMessagesService,
+                PushNotificationsService
             ]
         }).compileComponents();
+    }));
+
+    beforeEach(() => {
         fixture = TestBed.createComponent(TaskListComponent);
         el = fixture.debugElement.nativeElement;
 
@@ -64,19 +69,22 @@ describe('TaskListComponent', () => {
                 happy: true
             }];
         initialNrOfTasks = component.tasks.length;
-    }));
+    });
 
     it('should have a delete button', async(() => {
+        fixture.detectChanges();
         expect(el.querySelectorAll('button#delete-task-1').length)
             .toBeGreaterThan(0);
     }));
 
     it('should have a done button', async(() => {
+        fixture.detectChanges();
         expect(el.querySelectorAll('button#done-task-2').length)
             .toBeGreaterThan(0);
     }));
 
     it('should have a startDate column', async(() => {
+        fixture.detectChanges();
         // second column header
         expect(el.querySelector('table.table thead tr th:nth-child(2)').textContent)
             .toEqual('start');
@@ -87,6 +95,7 @@ describe('TaskListComponent', () => {
     }));
 
     it('should have a deadline column', async(() => {
+        fixture.detectChanges();
         // third column header
         expect(el.querySelector('table.table thead tr th:nth-child(3)').textContent)
             .toEqual('deadline');
@@ -107,6 +116,7 @@ describe('TaskListComponent', () => {
             }
         });
 
+        fixture.detectChanges();
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
 
         // click on the delete button of the first task
@@ -130,6 +140,7 @@ describe('TaskListComponent', () => {
             }
         });
 
+        fixture.detectChanges();
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks);
 
         fixture.debugElement.query(By.css('button#done-task-2'))
