@@ -10,7 +10,7 @@ import { PushNotificationsService } from 'angular2-notifications';
 export class TaskListComponent implements OnInit {
     tasks = [];
     doneTasks = [];
-    timerToken: number;
+    timerToken;
 
     constructor(private http: Http, private _pushNotifications: PushNotificationsService) {
     }
@@ -20,28 +20,32 @@ export class TaskListComponent implements OnInit {
     }
 
     notify() {
-        var msg = '';
-        if (this.tasks && this.tasks[0] && this.tasks[0].name)
+        let msg = '';
+        if (this.tasks && this.tasks[0] && this.tasks[0].name) {
             msg = 'next task: ' + this.tasks[0].name;
-        else
+        } else {
             msg = 'Nothing to do! Just enjoy life!';
-	let options = {
-	    body: msg,
-            icon: "/static/image/happyscheduler-logo.png"
-	}
+        }
 
-	let notify = this._pushNotifications.create('happy scheduler', options).subscribe(
+        const options = {
+            body: msg,
+            icon: '/static/image/happyscheduler-logo.png',
+            requireInteraction: true
+        };
+
+        this._pushNotifications.create('happy scheduler', options).subscribe(
             res => {},
             err => console.log(err)
-	);
+        );
     }
 
     public fetchTasks() {
-        if (this.timerToken)
+        if (this.timerToken) {
             clearTimeout(this.timerToken);
-        this.timerToken = 
+        }
+        this.timerToken =
             setInterval(
-                () => this.notify(), 
+                () => this.notify(),
                 (12 * 1000 * 60 * 60)   // every 12 hours
             );
 
