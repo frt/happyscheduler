@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, Output, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Http } from '@angular/http';
-import { InfoMessagesService } from '../info-messages.service';
+import { NotificationsService, SimpleNotificationsComponent } from 'angular2-notifications';
 
 @Component({
     selector: 'app-new-task',
@@ -15,7 +15,10 @@ export class NewTaskComponent implements OnInit {
     @ViewChild('dl')
     private input: ElementRef;
 
-    constructor(private http: Http, private messagesService: InfoMessagesService) {}
+    constructor
+        ( private http: Http
+        , private notificationsService: NotificationsService
+        ) {}
 
     ngOnInit() {
         this.newTaskForm = new FormGroup({
@@ -48,10 +51,20 @@ export class NewTaskComponent implements OnInit {
             (data) => {
                 this.newTaskForm.reset();
                 this.newTaskForm.controls.happy.setValue('true');
-                this.messagesService.infoMessage = 'new task created! ' + newTask.name;
+                this.notificationsService.success('new task created!', newTask.name, {
+                          timeOut: 5000,
+                          pauseOnHover: true,
+                          showProgressBar: false
+                        });
                 this.onNewTask.emit();
             },
-            error => alert('An error occurred: ' + error)
+            (error) => {
+                this.notificationsService.error('An error occurred: ', error, {
+                          timeOut: 5000,
+                          pauseOnHover: true,
+                          showProgressBar: false
+                        });
+            }
         );
     };
 }

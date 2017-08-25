@@ -1,7 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { InfoMessagesService } from './info-messages.service';
-import { PushNotificationsService } from 'angular2-notifications';
+import { PushNotificationsService, SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
 
 import { AppComponent } from './app.component';
 
@@ -9,14 +8,15 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
         imports: [
-            RouterTestingModule
+            RouterTestingModule,
+            SimpleNotificationsModule.forRoot(),
         ],
         declarations: [
             AppComponent
         ],
         providers: [
-            InfoMessagesService,
-            PushNotificationsService
+            PushNotificationsService,
+            NotificationsService
         ]
     }).compileComponents();
   }));
@@ -25,25 +25,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  }));
-
-  it('should show the info messages', async(() => {
-      const fixture = TestBed.createComponent(AppComponent);
-      const app = fixture.componentInstance;
-      const element = fixture.nativeElement;
-      app.messagesService.infoMessage = 'info msg';
-      fixture.detectChanges();
-      expect(element.querySelector('div.alert.alert-info#message').textContent)
-          .toMatch(/^\s*info msg\s*$/);
-  }));
-
-  it('should not show the info messages if it is empty', async(() => {
-      const fixture = TestBed.createComponent(AppComponent);
-      const app = fixture.componentInstance;
-      const element = fixture.nativeElement;
-      app.messagesService.infoMessage = '';
-      fixture.detectChanges();
-      expect(element.querySelector('div.alert.alert-info#message'))
-          .toBeNull();
   }));
 });

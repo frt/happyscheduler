@@ -2,8 +2,8 @@ import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed, async, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpModule, Http } from '@angular/http';
-import { InfoMessagesService } from '../info-messages.service';
 import { PushNotificationsService } from 'angular2-notifications';
+import { NotificationsService, SimpleNotificationsComponent } from 'angular2-notifications';
 
 import { Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -18,7 +18,7 @@ import { NewTaskComponent } from '../new-task/new-task.component';
 import { TaskListComponent } from './task-list.component';
 
 describe('TaskListComponent', () => {
-    let fixture;//: ComponentFixture<TaskListComponent>;
+    let fixture;
     let component: TaskListComponent;
     let el;
     let initialNrOfTasks;
@@ -37,8 +37,8 @@ describe('TaskListComponent', () => {
             ],
             providers: [
                 { provide: ComponentFixtureAutoDetect, useValue: true },
-                InfoMessagesService,
-                PushNotificationsService
+                PushNotificationsService,
+                NotificationsService
             ]
         }).compileComponents();
     }));

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { InfoMessagesService } from './info-messages.service';
-import { PushNotificationsService } from 'angular2-notifications';
+import { PushNotificationsService, SimpleNotificationsModule, NotificationsService } from 'angular2-notifications';
 
 @Component({
     selector: 'app-root',
@@ -9,8 +8,9 @@ import { PushNotificationsService } from 'angular2-notifications';
 })
 export class AppComponent {
 
-    constructor(public messagesService: InfoMessagesService
-                , private _pushNotifications: PushNotificationsService) {
+    constructor
+        ( private _pushNotifications: PushNotificationsService
+        ) {
         _pushNotifications.requestPermission();
     }
 }
