@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
-import { PushNotificationsService } from 'angular2-notifications';
+import { PushNotificationsService, NotificationsService, SimpleNotificationsComponent } from 'angular2-notifications';
 
 @Component({
     selector: 'app-task-list',
@@ -12,8 +12,11 @@ export class TaskListComponent implements OnInit {
     doneTasks = [];
     timerToken;
 
-    constructor(private http: Http, private _pushNotifications: PushNotificationsService) {
-    }
+    constructor
+        ( private http: Http
+        , private _pushNotifications: PushNotificationsService
+        , private notificationsService: NotificationsService
+        ) {}
 
     ngOnInit() {
         this.fetchTasks();
@@ -51,18 +54,36 @@ export class TaskListComponent implements OnInit {
 
         this.http.get('../tasks').subscribe(
             data => this.tasks = JSON.parse(data['_body']).tasks,
-            error => alert('An error occurred: ' + error)
+            (error) => {
+                this.notificationsService.error('An error occurred: ', error, {
+                          timeOut: 5000,
+                          pauseOnHover: true,
+                          showProgressBar: false
+                        });
+            }
         );
         this.http.get('../tasks/done').subscribe(
             data => this.doneTasks = JSON.parse(data['_body']).tasks,
-            error => alert('An error occurred: ' + error)
+            (error) => {
+                this.notificationsService.error('An error occurred: ', error, {
+                          timeOut: 5000,
+                          pauseOnHover: true,
+                          showProgressBar: false
+                        });
+            }
         );
     }
 
     onDeleteClick(id: number) {
         this.http.delete('../tasks/' + id).subscribe(
             () => this.fetchTasks(),
-            error => alert('An error occurred: ' + error)
+            (error) => {
+                this.notificationsService.error('An error occurred: ', error, {
+                          timeOut: 5000,
+                          pauseOnHover: true,
+                          showProgressBar: false
+                        });
+            }
         );
     }
 
@@ -71,7 +92,13 @@ export class TaskListComponent implements OnInit {
         taskToUpdate.done = true;
         this.http.put('../tasks/' + id, JSON.stringify(taskToUpdate)).subscribe(
             () => this.fetchTasks(),
-            error => alert('An error occurred: ' + error)
+            (error) => {
+                this.notificationsService.error('An error occurred: ', error, {
+                          timeOut: 5000,
+                          pauseOnHover: true,
+                          showProgressBar: false
+                        });
+            }
         );
     }
 }
