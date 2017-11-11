@@ -24,6 +24,8 @@ export class TaskListComponent implements OnInit {
 
     notify() {
         let msg = '';
+
+        this.fetchTasks();
         if (this.tasks && this.tasks[0] && this.tasks[0].name) {
             msg = 'next task: ' + this.tasks[0].name;
         } else {
