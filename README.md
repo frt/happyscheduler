@@ -14,11 +14,12 @@ Executing the following commands should build the frontend and put it's bundle's
 where they are needed.
 
     cd frontend
-    ng build --output-path ../static/frontend
+    ./ng-build
 
 ## Backend
 
 To execute it in "development mode" just do the following, after the frontend was
 built.
 
+    stack install yesod-bin --install-ghc
     stack exec -- yesod devel
