@@ -1,4 +1,4 @@
-<app-root>Loading...
+<app-root>_{MsgLoading}
 <script type="text/javascript" src=@{StaticR frontend_inline_bundle_js}>
 <script type="text/javascript" src=@{StaticR frontend_polyfills_bundle_js}>
 <link rel="stylesheet" href=@{StaticR frontend_styles_bundle_css} />

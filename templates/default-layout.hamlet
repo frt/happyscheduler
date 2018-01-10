@@ -39,7 +39,7 @@
         #{appCopyright $ appSettings master}
     <center>
         <p>
-                Donate:
+                _{MsgDonate}:
                 <br>
                 <a href="http://bitcoin.org" target="_NEW">
                     BitCoin:

@@ -1,53 +1,45 @@
-<h1>Welcome to Happy Scheduler!
-<h2>Procrastinate sadness, maximize happyness!
+<h1>_{MsgWelcome}
+<h2>_{MsgSubtitle}
 
 <blockquote>
-    <q>Work expands so as to fill the time available for its completion.
+    <q>_{MsgWorkExpands}
 
 <blockquote>
-    <q>If you wait until the last minute, it only takes a minute to do.
+    <q>_{MsgLastMinute}
 
-<h3>A todo list to minimize the time you spend on boring tasks
-
-<p>
-    Organize yourself and get through your work. When you leave only the time
-    you need for sad tasks and starts happy tasks as soon as possible, you
-    spend less time on sad tasks, maximizing the time available for happy taks.
-    Thus, maximizing happyness!
+<h3>_{MsgShortDescription}
 
 <p>
-    Happy Scheduler is a WebApp that allows you manage your ToDo list, that
-    suggest you a starting date for your tasks. Use it to add tasks to your
-    list, to show and to remove tasks from that list. You can classify if it’s a
-    happy or sad task. Then it schedules the tasks for you. Automagically!
+    _{MsgDescriptionP1}
+
+<p>
+    _{MsgDescriptionP2}
 
 <p>
     <a href="https://happyscheduler.today/auth/page/googleemail2/forward">
-        Login with your google account and start using Happy Scheduler now!
+        _{MsgLoginInvitation}
 
-<h3>Heuristics
+<h3>_{MsgHeuristics}
 
 <p>
     <dl>
-        <dt>Happy task:
-            <dd>Puts the starting date for sooner as possible;
-        <dt>Sad task:
-            <dd>Procastinates as much as possible.
+        <dt>_{MsgHappyTask}:
+            <dd>_{MsgHappyTaskDescription}
+        <dt>_{MsgSadTask}:
+            <dd>_{MsgSadTaskDescription}
 
 <p>
-    Source code: 
+    _{MsgSourceCode}:
     <a href="https://github.com/frt/happyscheduler">
         https://github.com/frt/happyscheduler
 
-<h3>Help Us
+<h3>_{MsgHelpUs}
 
 <p>
-    You can support the project by sharing about HappyScheduler in your social
-    networks, using the webApp and sending sugestions, and by donations for the
-    HappyScheduler can be more and more perfect, and we can pay our bills.
+    _{MsgSupport}
 
 <p>
-    Contribute with any value and help us to organize your life.
+    _{MsgContribute}
     <br>
     <a href="http://bitcoin.org" target="_NEW">
         BitCoin:
@@ -55,6 +47,6 @@
             <b>16Ar8BCE64cugudXyZbAuX6GptEDhUNW9X
 
 <p>
-    New features and bugs: 
+    _{MsgFeaturesAndBugs}:
     <a href="https://github.com/frt/happyscheduler/issues">
         https://github.com/frt/happyscheduler/issues
