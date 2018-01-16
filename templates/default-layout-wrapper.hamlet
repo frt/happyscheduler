@@ -10,7 +10,8 @@ $newline never
 
     <title>#{pageTitle pc}
     <base href="/frontend/">
-    <meta name="description" content="Happy Scheduler: Procrastinate sadness, maximize happyness">
+    <meta name="description" content="Happy Scheduler: Procrastinate sadness, maximize happyness!">
+    <meta lang="pt-BR" name="description" content="Happy Scheduler: Procrastine a tristeza, maximize a felicidade!">
     <meta name="author" content="Fábio Roberto Teodoro <fr.teodoro@gmail.com>">
     <meta name="flattr:id" content="pd2krk">
 

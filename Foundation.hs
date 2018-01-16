@@ -84,6 +84,7 @@ instance Yesod App where
     defaultLayout widget = do
         master <- getYesod
         mmsg <- getMessage
+        msgRender <- getMessageRender
 
         muser <- maybeAuthPair
         mcurrentRoute <- getCurrentRoute
@@ -91,22 +92,22 @@ instance Yesod App where
         -- Define the menu items of the header.
         let menuItems =
                 [ NavbarLeft MenuItem
-                    { menuItemLabel = "Home"
+                    { menuItemLabel = msgRender MsgHome
                     , menuItemRoute = HomeR
                     , menuItemAccessCallback = True
                     }
                 , NavbarLeft MenuItem
-                    { menuItemLabel = "My Tasks"
+                    { menuItemLabel = msgRender MsgMyTasks
                     , menuItemRoute = FrontendR []
                     , menuItemAccessCallback = isJust muser
                     }
                 , NavbarRight MenuItem
-                    { menuItemLabel = "Login"
+                    { menuItemLabel = msgRender MsgLogin
                     , menuItemRoute = AuthR LoginR
                     , menuItemAccessCallback = isNothing muser
                     }
                 , NavbarRight MenuItem
-                    { menuItemLabel = "Logout"
+                    { menuItemLabel = msgRender MsgLogout
                     , menuItemRoute = AuthR LogoutR
                     , menuItemAccessCallback = isJust muser
                     }

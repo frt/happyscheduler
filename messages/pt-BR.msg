@@ -23,3 +23,8 @@ Support: Você pode apoiar o projeto compartilhando sobre o HappyScheduler nas r
 
 Contribute: Contribua com qualquer valor e nos ajude a te ajudar a organizar a tua vida para seres mais feliz.
 FeaturesAndBugs: Pedidos de novas funcionalidades e correção de bugs
+ToggleNav: Alternar navegação
+Home: Início
+MyTasks: Minhas Tarefas
+Login: Entrar
+Logout: Sair

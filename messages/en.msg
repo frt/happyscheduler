@@ -23,3 +23,8 @@ Support: You can support the project by sharing about HappyScheduler in your soc
 
 Contribute: Contribute with any value and help us to organize your life.
 FeaturesAndBugs: New features and bugs
+ToggleNav: Toggle navigation
+Home: Home
+MyTasks: My Tasks
+Login: Login
+Logout: Logout
