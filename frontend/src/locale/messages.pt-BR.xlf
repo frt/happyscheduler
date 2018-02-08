@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="todo" datatype="html">
+        <source>TODO:</source>
+        <target>Por Fazer:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="start" datatype="html">
+        <source>start</source>
+        <target>início</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="deadline" datatype="html">
+        <source>deadline</source>
+        <target>prazo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="taskDone" datatype="html">
+        <source>mark task as done</source>
+        <target>marcar tarefa como feita</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="taskDelete" datatype="html">
+        <source>delete task</source>
+        <target>remove a tarefa</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="done" datatype="html">
+        <source>DONE:</source>
+        <target>Feito:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/task-list.component.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="task" datatype="html">
+        <source>task</source>
+        <target>tarefa</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="describeTask" datatype="html">
+        <source>describe your task</source>
+        <target>descreva a tarefa</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="isHappyOrSad" datatype="html">
+        <source>Is this a task that makes you happy or sad?</source>
+        <target>Esta tarefa te deixa feliz ou triste?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="time" datatype="html">
+        <source>time</source>
+        <target>tempo</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="days" datatype="html">
+        <source>days</source>
+        <target>dias</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="howManyDays" datatype="html">
+        <source>How many days do you need to do it?</source>
+        <target>Quantos dias tu precisa pra fazer isto?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="whenDeadline" datatype="html">
+        <source>Until when this task needs to be done?</source>
+        <target>Até quando esta tarefa precisa ser feita?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="newTaskButton" datatype="html">
+        <source>
+        save the new task
+    </source>
+        <target>
+        salvar a tarefa nova
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/new-task/new-task.component.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
