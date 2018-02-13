@@ -3,4 +3,6 @@
 # builds to production. 
 # this hashing thing yesod will do it his way, so not
 # done here.
-ng build -prod --output-hashing=none --output-path ../static/frontend/ $*
+ng build -prod --output-hashing=none --output-path ../static/frontend/en $*
+ng build -prod --output-hashing=none --output-path ../static/frontend/pt --i18nFile=src/locale/messages.pt-BR.xlf --i18nFormat=xlf --locale=pt-BR $*
+

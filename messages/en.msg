@@ -1,3 +1,4 @@
+Lang: en
 Donate: Donate
 Loading: Loading...
 Welcome: Welcome to Happy Scheduler!

@@ -1,6 +1,6 @@
 <app-root>_{MsgLoading}
-<script type="text/javascript" src=@{StaticR frontend_inline_bundle_js}>
-<script type="text/javascript" src=@{StaticR frontend_polyfills_bundle_js}>
-<link rel="stylesheet" href=@{StaticR frontend_styles_bundle_css} />
-<script type="text/javascript" src=@{StaticR frontend_vendor_bundle_js}>
-<script type="text/javascript" src=@{StaticR frontend_main_bundle_js}>
+<script type="text/javascript" src="/static/frontend/_{MsgLang}/inline.bundle.js">
+<script type="text/javascript" src="/static/frontend/_{MsgLang}/polyfills.bundle.js">
+<link rel="stylesheet" href="/static/frontend/_{MsgLang}/styles.bundle.css" />
+<script type="text/javascript" src="/static/frontend/_{MsgLang}/vendor.bundle.js">
+<script type="text/javascript" src="/static/frontend/_{MsgLang}/main.bundle.js">

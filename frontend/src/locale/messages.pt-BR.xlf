@@ -2,6 +2,14 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="newTask" datatype="html">
+        <source>New Task</source>
+        <target>Tarefa Nova</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/task-list/new-task.component.ts</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="todo" datatype="html">
         <source>TODO:</source>
         <target>Por Fazer:</target>

@@ -1,3 +1,4 @@
+Lang: pt
 Donate: Doações
 Loading: Carregando...
 Welcome: Bem vindo ao Happy Scheduler!
