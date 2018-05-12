@@ -23,7 +23,7 @@ describe('TaskListComponent', () => {
     let el;
     let initialNrOfTasks;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [
                 ReactiveFormsModule,
@@ -41,9 +41,6 @@ describe('TaskListComponent', () => {
                 NotificationsService
             ]
         }).compileComponents();
-    }));
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(TaskListComponent);
         el = fixture.debugElement.nativeElement;
 
@@ -71,19 +68,19 @@ describe('TaskListComponent', () => {
         initialNrOfTasks = component.tasks.length;
     });
 
-    it('should have a delete button', async(() => {
+    it('should have a delete button', () => {
         fixture.detectChanges();
         expect(el.querySelectorAll('button#delete-task-1').length)
             .toBeGreaterThan(0);
-    }));
+    });
 
-    it('should have a done button', async(() => {
+    it('should have a done button', () => {
         fixture.detectChanges();
         expect(el.querySelectorAll('button#done-task-2').length)
             .toBeGreaterThan(0);
-    }));
+    });
 
-    it('should have a startDate column', async(() => {
+    it('should have a startDate column', () => {
         fixture.detectChanges();
         // second column header
         expect(el.querySelector('table.table thead tr th:nth-child(2)').textContent)
@@ -92,9 +89,9 @@ describe('TaskListComponent', () => {
         // first line, second column
         expect(el.querySelector('table.table tbody tr td:nth-child(2)').textContent)
             .toContain('2017-07-02');
-    }));
+    });
 
-    it('should have a deadline column', async(() => {
+    it('should have a deadline column', () => {
         fixture.detectChanges();
         // third column header
         expect(el.querySelector('table.table thead tr th:nth-child(3)').textContent)
@@ -103,9 +100,9 @@ describe('TaskListComponent', () => {
         // first line, third column
         expect(el.querySelector('table.table tbody tr td:nth-child(3)').textContent)
             .toContain('2017-08-01');
-    }));
+    });
 
-    it('should delete a task when delete button is clicked', async(() => {
+    it('should delete a task when delete button is clicked', () => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'delete').and.returnValue(Observable.of('DELETED'));
         spyOn(http, 'get').and.callFake(function() {
@@ -127,9 +124,9 @@ describe('TaskListComponent', () => {
         expect(http.delete).toHaveBeenCalledWith('../tasks/1');
         expect(http.get).toHaveBeenCalledWith('../tasks');
         expect(el.querySelectorAll('.task-item').length).toEqual(initialNrOfTasks - 1);
-    }));
+    });
 
-    it('should mark a task as done when done button is clicked', async(() => {
+    it('should mark a task as done when done button is clicked', () => {
         const http = fixture.debugElement.injector.get(Http);
         spyOn(http, 'put').and.returnValue(Observable.of('UPDATED'));
         spyOn(http, 'get').and.callFake(function() {
@@ -154,5 +151,5 @@ describe('TaskListComponent', () => {
             .toEqual(initialNrOfTasks - 1);    // will take the task
                                               // out of the list
                                               // for now
-    }));
+    });
 });
