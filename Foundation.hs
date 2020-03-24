@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Foundation where
 
 import Import.NoFoundation
@@ -5,7 +7,8 @@ import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 
-import Yesod.Auth.GoogleEmail2
+import Yesod.Auth.OAuth2.Google
+import Yesod.Auth.OAuth2 (getAccessToken, getUserResponseJSON)
 
 -- Used only when in "auth-dummy-login" setting is enabled.
 import Yesod.Auth.Dummy
@@ -37,6 +40,13 @@ data MenuItem = MenuItem
 data MenuTypes
     = NavbarLeft MenuItem
     | NavbarRight MenuItem
+
+data GoogleUser
+    = GoogleUser
+    { email :: Text }
+    deriving Generic
+
+instance FromJSON GoogleUser
 
 -- i18n
 mkMessage "App" "messages" "en"
@@ -188,17 +198,19 @@ instance YesodAuth App where
     logoutDest _ = HomeR
 
     authenticate creds = runDB $ do
-        x <- getBy $ UniqueUser $ credsIdent creds
+        let Right userEmail = email <$> getUserResponseJSON creds
+            updatedCreds = creds { credsIdent = userEmail }
+
+        x <- getBy $ UniqueUser $ credsIdent updatedCreds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
             Nothing -> Authenticated <$> insert User
-                { userIdent = credsIdent creds
+                { userIdent = credsIdent updatedCreds
                 , userPassword = Nothing
                 }
 
     -- You can add other plugins like Google Email, email or OAuth here
-    authPlugins app = authGoogleEmail (appGAuthClientId $ appSettings app) 
-                        (appGAuthClientSecret $ appSettings app) : extraAuthPlugins
+    authPlugins app = oauth2GoogleScoped ["email", "profile"] (appGAuthClientId $ appSettings app) (appGAuthClientSecret $ appSettings app) : extraAuthPlugins
         -- Enable authDummy login if enabled.
         where extraAuthPlugins = [authDummy | appAuthDummyLogin $ appSettings app]
 
